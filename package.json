@@ -1,10 +1,14 @@
 {
-  "name": "codemirror-lang-EXAMPLE",
-  "version": "0.1.0",
-  "description": "EXAMPLE language support for CodeMirror",
+  "name": "codemirror-lang-boxlang",
+  "version": "1.0.0",
+  "description": "BoxLang language support for CodeMirror",
   "scripts": {
     "test": "mocha test/test.js",
-    "prepare": "rollup -c"
+    "prepare": "npm run build",
+	"build": "rollup -c",
+	"lint": "eslint . --ext .ts,.js --fix",
+	"lint:fix": "eslint . --ext .ts,.js --fix",
+	"prepublishOnly": "npm run lint && npm test && npm run build"
   },
   "type": "module",
   "main": "dist/index.cjs",
@@ -21,12 +25,41 @@
     "@lezer/lr": "^1.0.0"
   },
   "devDependencies": {
+	"@eslint/js": "^9.0.0",
     "@lezer/generator": "^1.0.0",
+	"eslint": "^9.0.0",
+	"eslint-plugin-jsdoc": "^51.3.3",
+    "globals": "^16.3.0",
     "mocha": "^9.0.1",
     "rollup": "^2.60.2",
     "rollup-plugin-dts": "^4.0.1",
     "rollup-plugin-ts": "^3.0.2",
     "typescript": "^4.3.4"
   },
-  "license": "MIT"
+  "keywords": [
+    "boxlang",
+    "codemirror",
+    "syntax-highlighting",
+    "code-editor",
+    "language-support",
+    "ide"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ortus-solutions/codemirror-lang-boxlang.git",
+    "directory": "monaco"
+  },
+  "bugs": {
+    "url": "https://github.com/ortus-solutions/codemirror-lang-boxlang/issues"
+  },
+  "homepage": "https://boxlang.io",
+  "author": {
+    "name": "Ortus Solutions",
+    "email": "boxlang@ortussolutions.com",
+    "url": "https://ortussolutions.com"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
 }

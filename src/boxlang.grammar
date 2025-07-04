@@ -80,36 +80,42 @@ BinaryExpression {
   expression !power PowerOp { "^" } expression |
   expression !times times expression |
   expression !intdiv IntDivOp { "\\" } expression |
+  expression !mod ModOp expression |
   expression !plus op<Arith, "+" | "-"> expression |
   expression !concat StringConcatOp { "&" } expression
 }
 
 BoxLangCompareOp {
-  kw<"EQ"> | kw<"eq"> | kw<"NEQ"> | kw<"neq"> | kw<"GT"> | kw<"gt"> | kw<"GTE"> | kw<"gte"> | kw<"LT"> | kw<"lt"> | kw<"LTE"> | kw<"lte">
+  kw<"EQ"> | kw<"eq"> | kw<"Eq"> |
+  kw<"NEQ"> | kw<"neq"> | kw<"Neq"> |
+  kw<"GT"> | kw<"gt"> | kw<"Gt"> |
+  kw<"GTE"> | kw<"gte"> | kw<"Gte"> |
+  kw<"LT"> | kw<"lt"> | kw<"Lt"> |
+  kw<"LTE"> | kw<"lte"> | kw<"Lte">
 }
 
 BoxLangContainsOp {
-  kw<"CONTAINS"> | kw<"contains">
+  kw<"CONTAINS"> | kw<"contains"> | kw<"Contains">
 }
 
 BoxLangNotOp {
-  kw<"NOT"> | kw<"not">
+  kw<"NOT"> | kw<"not"> | kw<"Not">
 }
 
 BoxLangXorOp {
-  kw<"XOR"> | kw<"xor">
+  kw<"XOR"> | kw<"xor"> | kw<"Xor">
 }
 
 BoxLangEqvOp {
-  kw<"EQV"> | kw<"eqv">
+  kw<"EQV"> | kw<"eqv"> | kw<"Eqv">
 }
 
 BoxLangImpOp {
-  kw<"IMP"> | kw<"imp">
+  kw<"IMP"> | kw<"imp"> | kw<"Imp">
 }
 
 ModOp {
-  kw<"MOD"> | kw<"mod">
+  kw<"MOD"> | kw<"mod"> | kw<"Mod">
 }
 
 InstanceofExpression {

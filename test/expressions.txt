@@ -787,3 +787,111 @@ Program(
     Identifier,
     AssignOp,
     UnaryExpression(LogicOp,BooleanLiteral))))
+
+# BoxLang Word-based Comparison Operators
+
+a eq b;
+a neq b;
+a gt b;
+a gte b;
+a lt b;
+a lte b;
+
+==>
+
+Program(
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangCompareOp(eq),Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangCompareOp(neq),Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangCompareOp(gt),Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangCompareOp(gte),Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangCompareOp(lt),Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangCompareOp(lte),Identifier)))
+
+# BoxLang Word-based Logical Operators
+
+a and b;
+a or b;
+a xor b;
+
+==>
+
+Program(
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangLogicOp(and),Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangLogicOp(or),Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangXorOp(xor),Identifier)))
+
+# BoxLang Word-based Modulo Operator
+
+a mod b;
+
+==>
+
+Program(
+  ExpressionStatement(BinaryExpression(Identifier,ModOp(mod),Identifier)))
+
+# BoxLang Contains Operator
+
+a contains b;
+
+==>
+
+Program(
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangContainsOp(contains),Identifier)))
+
+# BoxLang NOT Operator (word-based)
+
+not a;
+
+==>
+
+Program(
+  ExpressionStatement(UnaryExpression(BoxLangNotOp(not),Identifier)))
+
+# BoxLang EQV and IMP Operators
+
+a eqv b;
+a imp b;
+
+==>
+
+Program(
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangEqvOp(eqv),Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangImpOp(imp),Identifier)))
+
+# BoxLang Case-insensitive Operators
+
+a eq b;
+a neq b;
+a and b;
+a or b;
+a xor b;
+a mod b;
+a contains b;
+not a;
+
+==>
+
+Program(
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangCompareOp(eq),Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangCompareOp(neq),Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangLogicOp(and),Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangLogicOp(or),Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangXorOp(xor),Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,ModOp(mod),Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangContainsOp(contains),Identifier)),
+  ExpressionStatement(UnaryExpression(BoxLangNotOp(not),Identifier)))
+
+# BoxLang Mixed Symbol and Word Operators
+
+a == b and c > d or e contains f;
+
+==>
+
+Program(
+  ExpressionStatement(BinaryExpression(
+    BinaryExpression(
+      BinaryExpression(Identifier,CompareOp,Identifier),
+      BoxLangLogicOp(and),
+      BinaryExpression(Identifier,CompareOp,Identifier)),
+    BoxLangLogicOp(or),
+    BinaryExpression(Identifier,BoxLangContainsOp(contains),Identifier))))

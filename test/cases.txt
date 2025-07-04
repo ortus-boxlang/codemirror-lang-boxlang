@@ -35,3 +35,13 @@ print( "DONE" );
 ==>
 
 Program(IfStatement(if, ParenthesizedExpression(BooleanLiteral), Block(ExpressionStatement(MethodInvocation(MethodName(Identifier), ArgumentList(StringLiteral))))), ExpressionStatement(MethodInvocation(MethodName(Identifier), ArgumentList(StringLiteral))))
+
+# BoxLang Types
+
+any myVar = "test";
+string name = "BoxLang";
+numeric count = 42;
+
+==>
+
+Program(LocalVariableDeclaration(PrimitiveType, VariableDeclarator(Definition, AssignOp, StringLiteral)), LocalVariableDeclaration(PrimitiveType, VariableDeclarator(Definition, AssignOp, StringLiteral)), LocalVariableDeclaration(PrimitiveType, VariableDeclarator(Definition, AssignOp, IntegerLiteral)))

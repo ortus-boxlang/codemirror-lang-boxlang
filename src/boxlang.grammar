@@ -568,7 +568,7 @@ unannotatedType {
 
 simpleType {
   kw<"void"> |
-  @specialize[@name=PrimitiveType]<identifier, "byte" | "short" | "int" | "long" | "char" | "float" | "double" | "boolean"> |
+  @specialize[@name=PrimitiveType]<identifier, "byte" | "short" | "int" | "long" | "char" | "float" | "double" | "boolean" | "any" | "string" | "numeric"> |
   TypeName |
   ScopedTypeName |
   GenericType

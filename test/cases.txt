@@ -1,41 +1,37 @@
 # Booleans
 
-#t
-#f
+true;
+false;
 
 ==>
 
-Program(Boolean, Boolean)
+Program(ExpressionStatement(BooleanLiteral), ExpressionStatement(BooleanLiteral))
 
 # Identifiers
 
-one
-Two_Three
+one;
+Two_Three;
 
 ==>
 
-Program(Identifier, Identifier)
+Program(ExpressionStatement(Identifier), ExpressionStatement(Identifier))
 
 # Strings
 
-"hello"
-"one\"\\two"
+"hello";
+"one\"\\two";
 
 ==>
 
-Program(String, String)
+Program(ExpressionStatement(StringLiteral), ExpressionStatement(StringLiteral))
 
 # Applications
 
-(begin
-  (when #t
-    (print (concat "hello" " " "world")))
-  (print "DONE"))
+if ( true ) {
+    print( "hello" );
+}
+print( "DONE" );
 
 ==>
 
-Program(Application(
-  Identifier,
-  Application(Identifier, Boolean, Application(
-    Identifier, Application(Identifier, String, String, String)))
-  Application(Identifier, String)))
+Program(IfStatement(if, ParenthesizedExpression(BooleanLiteral), Block(ExpressionStatement(MethodInvocation(MethodName(Identifier), ArgumentList(StringLiteral))))), ExpressionStatement(MethodInvocation(MethodName(Identifier), ArgumentList(StringLiteral))))

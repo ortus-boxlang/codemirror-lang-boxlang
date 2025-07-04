@@ -67,15 +67,19 @@ AssignmentExpression {
 }
 
 BinaryExpression {
-  expression !compare (op<Compare, "==" | ">=" | "<=" | "!="> | CompareOp { "<" | ">" }) expression |
-  expression !and op<Logic, "&&"> expression |
-  expression !or op<Logic, "||"> expression |
+  expression !compare (op<Compare, "==" | ">=" | "<=" | "!="> | CompareOp { "<" | ">" } | BoxLangCompareOp) expression |
+  expression !and (op<Logic, "&&"> | BoxLangLogicOp { kw<"AND"> | kw<"and"> }) expression |
+  expression !or (op<Logic, "||"> | BoxLangLogicOp { kw<"OR"> | kw<"or"> }) expression |
   expression !concat StringConcatOp { "&" } expression |
   expression !bitOr op<Bit, "|"> expression |
   expression !bitXor op<Bit, "^"> expression |
   expression !plus op<Arith, "+" | "-"> expression |
   expression !times times expression |
   expression !shift (op<Arith, "%"> | op<Bit, "<<" | ">>" ">"?>) expression
+}
+
+BoxLangCompareOp {
+  kw<"EQ"> | kw<"eq"> | kw<"NEQ"> | kw<"neq"> | kw<"GT"> | kw<"gt"> | kw<"GTE"> | kw<"gte"> | kw<"LT"> | kw<"lt"> | kw<"LTE"> | kw<"lte">
 }
 
 InstanceofExpression {

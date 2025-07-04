@@ -22,16 +22,12 @@ a != b;
 a && b;
 a || b;
 a & b;
-a | b;
 a ^ b;
-a % b;
-a << b;
-a >> b;
-a >>> b;
 3 + 2;
 3 - 2;
 3 * 2;
 9 / 3;
+10 \ 3;
 
 ==>
 
@@ -45,16 +41,12 @@ Program(
   ExpressionStatement(BinaryExpression(Identifier, LogicOp, Identifier)),
   ExpressionStatement(BinaryExpression(Identifier, LogicOp, Identifier)),
   ExpressionStatement(BinaryExpression(Identifier, StringConcatOp, Identifier)),
-  ExpressionStatement(BinaryExpression(Identifier, BitOp, Identifier)),
-  ExpressionStatement(BinaryExpression(Identifier, BitOp, Identifier)),
-  ExpressionStatement(BinaryExpression(Identifier, ArithOp, Identifier)),
-  ExpressionStatement(BinaryExpression(Identifier, BitOp, Identifier)),
-  ExpressionStatement(BinaryExpression(Identifier, BitOp, Identifier)),
-  ExpressionStatement(BinaryExpression(Identifier, BitOp, Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier, PowerOp, Identifier)),
   ExpressionStatement(BinaryExpression(IntegerLiteral, ArithOp, IntegerLiteral)),
   ExpressionStatement(BinaryExpression(IntegerLiteral, ArithOp, IntegerLiteral)),
   ExpressionStatement(BinaryExpression(IntegerLiteral, ArithOp, IntegerLiteral)),
-  ExpressionStatement(BinaryExpression(IntegerLiteral, ArithOp, IntegerLiteral)))
+  ExpressionStatement(BinaryExpression(IntegerLiteral, ArithOp, IntegerLiteral)),
+  ExpressionStatement(BinaryExpression(IntegerLiteral, IntDivOp, IntegerLiteral)))
 
 
 # instanceof expressions
@@ -730,7 +722,7 @@ Program(ExpressionStatement(AssignmentExpression(Identifier,AssignOp,TextBlock))
 
 # precedence
 
-x = 1 < 2 || a & b ^ c * 2 && 1 + d | e;
+x = 1 < 2 || a & b ^ c * 2 && 1 + d;
 
 ==>
 
@@ -740,14 +732,14 @@ Program(ExpressionStatement(AssignmentExpression(Identifier,AssignOp,
     LogicOp,
     BinaryExpression(
       BinaryExpression(
-        BinaryExpression(Identifier,StringConcatOp,Identifier),
-        BitOp,
-        BinaryExpression(Identifier,ArithOp,IntegerLiteral)),
+        Identifier,
+        StringConcatOp,
+        BinaryExpression(
+          BinaryExpression(Identifier,PowerOp,Identifier),
+          ArithOp,
+          IntegerLiteral)),
       LogicOp,
-      BinaryExpression(
-        BinaryExpression(IntegerLiteral,ArithOp,Identifier),
-        BitOp,
-        Identifier))))))
+      BinaryExpression(IntegerLiteral,ArithOp,Identifier))))))
 
 # Unicode identifiers
 
@@ -756,3 +748,42 @@ Amélie + 橘子;
 ==>
 
 Program(ExpressionStatement(BinaryExpression(Identifier,ArithOp,Identifier)))
+
+# BoxLang Power Operator
+
+x = 2^3;
+
+==>
+
+Program(ExpressionStatement(AssignmentExpression(
+  Identifier,
+  AssignOp,
+  BinaryExpression(IntegerLiteral,PowerOp,IntegerLiteral))))
+
+# BoxLang Integer Division
+
+x = 10 \ 3;
+
+==>
+
+Program(ExpressionStatement(AssignmentExpression(
+  Identifier,
+  AssignOp,
+  BinaryExpression(IntegerLiteral,IntDivOp,IntegerLiteral))))
+
+# BoxLang NOT Operator (using ! for now)
+
+x = !true;
+y = !false;
+
+==>
+
+Program(
+  ExpressionStatement(AssignmentExpression(
+    Identifier,
+    AssignOp,
+    UnaryExpression(LogicOp,BooleanLiteral))),
+  ExpressionStatement(AssignmentExpression(
+    Identifier,
+    AssignOp,
+    UnaryExpression(LogicOp,BooleanLiteral))))

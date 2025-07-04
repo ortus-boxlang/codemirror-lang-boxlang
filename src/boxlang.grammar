@@ -3,16 +3,20 @@
   update @left
   unaryPlus @left
   negate @left
-  instanceof
+  power @right
   times @left
+  intdiv @left
+  mod @left
   plus @left
   concat @left
-  shift @left
   compare @left
-  bitOr @left
-  bitXor @left
+  not @left
   and @left
   or @left
+  xor @left
+  eqv @left
+  imp @left
+  instanceof
   ternary @right
   valuePair
   assign @right
@@ -67,19 +71,45 @@ AssignmentExpression {
 }
 
 BinaryExpression {
-  expression !compare (op<Compare, "==" | ">=" | "<=" | "!="> | CompareOp { "<" | ">" } | BoxLangCompareOp) expression |
+  expression !compare (op<Compare, "==" | ">=" | "<=" | "!="> | CompareOp { "<" | ">" } | BoxLangCompareOp | BoxLangContainsOp) expression |
   expression !and (op<Logic, "&&"> | BoxLangLogicOp { kw<"AND"> | kw<"and"> }) expression |
   expression !or (op<Logic, "||"> | BoxLangLogicOp { kw<"OR"> | kw<"or"> }) expression |
-  expression !concat StringConcatOp { "&" } expression |
-  expression !bitOr op<Bit, "|"> expression |
-  expression !bitXor op<Bit, "^"> expression |
-  expression !plus op<Arith, "+" | "-"> expression |
+  expression !xor BoxLangXorOp expression |
+  expression !eqv BoxLangEqvOp expression |
+  expression !imp BoxLangImpOp expression |
+  expression !power PowerOp { "^" } expression |
   expression !times times expression |
-  expression !shift (op<Arith, "%"> | op<Bit, "<<" | ">>" ">"?>) expression
+  expression !intdiv IntDivOp { "\\" } expression |
+  expression !plus op<Arith, "+" | "-"> expression |
+  expression !concat StringConcatOp { "&" } expression
 }
 
 BoxLangCompareOp {
   kw<"EQ"> | kw<"eq"> | kw<"NEQ"> | kw<"neq"> | kw<"GT"> | kw<"gt"> | kw<"GTE"> | kw<"gte"> | kw<"LT"> | kw<"lt"> | kw<"LTE"> | kw<"lte">
+}
+
+BoxLangContainsOp {
+  kw<"CONTAINS"> | kw<"contains">
+}
+
+BoxLangNotOp {
+  kw<"NOT"> | kw<"not">
+}
+
+BoxLangXorOp {
+  kw<"XOR"> | kw<"xor">
+}
+
+BoxLangEqvOp {
+  kw<"EQV"> | kw<"eqv">
+}
+
+BoxLangImpOp {
+  kw<"IMP"> | kw<"imp">
+}
+
+ModOp {
+  kw<"MOD"> | kw<"mod">
 }
 
 InstanceofExpression {
@@ -100,7 +130,7 @@ TernaryExpression {
 
 UnaryExpression {
   op<Arith, "+" | "-"> !unaryPlus expression |
-  (op<Logic, "!"> | op<Bit, "~">) !negate expression
+  (op<Logic, "!"> | BoxLangNotOp) !negate expression
 }
 
 UpdateExpression {
@@ -722,12 +752,12 @@ commaSepTrailing<expr> { (expr ("," expr?)*)? }
   capitalIdentifier { $[A-Z] identifierChar* }
 
   AssignOp {
-    ("+" | "-" | "*" | "/" | "&" | "|" | "^" | "%" | "<<" | ">>" ">"?) "="
+    ("+" | "-" | "*" | "/" | "&" | "^" | "\\" | "%") "="
   }
 
   op[@name={name} "Op"]<name, body> { body }
 
-  times[@name=ArithOp] { "*" | "/" }
+  times[@name=ArithOp] { "*" | "/" | "%" }
 
   LineComment[isolate] {
     "//" ![\n]*
@@ -744,7 +774,7 @@ commaSepTrailing<expr> { (expr ("," expr?)*)? }
 
   "="[@name=AssignOp]
 
-  "{" "}" "(" ")" "[" "]" "." "," ";" ":"
+  "{" "}" "(" ")" "[" "]" "." "," ";" ":" "\\"
 }
 
 @external propSource javaHighlighting from "./highlight"

@@ -45,3 +45,12 @@ numeric count = 42;
 ==>
 
 Program(LocalVariableDeclaration(PrimitiveType, VariableDeclarator(Definition, AssignOp, StringLiteral)), LocalVariableDeclaration(PrimitiveType, VariableDeclarator(Definition, AssignOp, StringLiteral)), LocalVariableDeclaration(PrimitiveType, VariableDeclarator(Definition, AssignOp, IntegerLiteral)))
+
+# String Concatenation
+
+string fullName = firstName & " " & lastName;
+string message = "Hello " & name & "!";
+
+==>
+
+Program(LocalVariableDeclaration(PrimitiveType, VariableDeclarator(Definition, AssignOp, BinaryExpression(BinaryExpression(Identifier, StringConcatOp, StringLiteral), StringConcatOp, Identifier))), LocalVariableDeclaration(PrimitiveType, VariableDeclarator(Definition, AssignOp, BinaryExpression(BinaryExpression(StringLiteral, StringConcatOp, Identifier), StringConcatOp, StringLiteral))))

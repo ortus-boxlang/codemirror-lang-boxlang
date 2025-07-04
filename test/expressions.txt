@@ -44,7 +44,7 @@ Program(
   ExpressionStatement(BinaryExpression(Identifier, CompareOp, Identifier)),
   ExpressionStatement(BinaryExpression(Identifier, LogicOp, Identifier)),
   ExpressionStatement(BinaryExpression(Identifier, LogicOp, Identifier)),
-  ExpressionStatement(BinaryExpression(Identifier, BitOp, Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier, StringConcatOp, Identifier)),
   ExpressionStatement(BinaryExpression(Identifier, BitOp, Identifier)),
   ExpressionStatement(BinaryExpression(Identifier, BitOp, Identifier)),
   ExpressionStatement(BinaryExpression(Identifier, ArithOp, Identifier)),
@@ -740,7 +740,7 @@ Program(ExpressionStatement(AssignmentExpression(Identifier,AssignOp,
     LogicOp,
     BinaryExpression(
       BinaryExpression(
-        BinaryExpression(Identifier,BitOp,Identifier),
+        BinaryExpression(Identifier,StringConcatOp,Identifier),
         BitOp,
         BinaryExpression(Identifier,ArithOp,IntegerLiteral)),
       LogicOp,

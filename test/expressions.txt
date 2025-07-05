@@ -932,3 +932,12 @@ Program(
   ExpressionStatement(SpreadExpression(SpreadOp,Identifier)),
   ExpressionStatement(MethodInvocation(MethodName(Identifier),ArgumentList(SpreadExpression(SpreadOp,Identifier)))),
   ExpressionStatement(ArrayLiteral(IntegerLiteral,IntegerLiteral,SpreadExpression(SpreadOp,Identifier))))
+
+# BoxLang DOES NOT CONTAIN Operator
+
+text does not contain "pattern";
+
+==>
+
+Program(
+  ExpressionStatement(BinaryExpression(Identifier,BoxLangDoesNotContainOp(does,not,contain),StringLiteral)))

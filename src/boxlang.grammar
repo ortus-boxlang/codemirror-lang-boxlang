@@ -74,7 +74,7 @@ AssignmentExpression {
 }
 
 BinaryExpression {
-  expression !compare (op<Compare, "==" | ">=" | "<=" | "!="> | CompareOp { "<" | ">" } | BoxLangCompareOp | BoxLangContainsOp) expression |
+  expression !compare (op<Compare, "==" | ">=" | "<=" | "!="> | CompareOp { "<" | ">" } | BoxLangCompareOp | BoxLangContainsOp | BoxLangDoesNotContainOp) expression |
   expression !and (op<Logic, "&&"> | BoxLangLogicOp { kw<"AND"> | kw<"and"> }) expression |
   expression !or (op<Logic, "||"> | BoxLangLogicOp { kw<"OR"> | kw<"or"> }) expression |
   expression !xor BoxLangXorOp expression |
@@ -99,6 +99,12 @@ BoxLangCompareOp {
 
 BoxLangContainsOp {
   kw<"CONTAINS"> | kw<"contains"> | kw<"Contains">
+}
+
+BoxLangDoesNotContainOp {
+  kw<"does"> kw<"not"> kw<"contain"> |
+  kw<"DOES"> kw<"NOT"> kw<"CONTAINS"> |
+  kw<"Does"> kw<"Not"> kw<"Contains">
 }
 
 BoxLangNotOp {

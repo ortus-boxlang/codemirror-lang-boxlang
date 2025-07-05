@@ -59,6 +59,7 @@ expression[@isGroup=Expression] {
   InstanceofExpression |
   CastAsExpression |
   LambdaExpression |
+  ClosureExpression |
   TernaryExpression |
   ElvisExpression |
   SpreadExpression |
@@ -146,6 +147,10 @@ CastAsExpression {
 
 LambdaExpression {
   (Definition | FormalParameters | InferredParameters) "->" (expression | Block)
+}
+
+ClosureExpression {
+  (Definition | FormalParameters | InferredParameters) "=>" (expression | Block)
 }
 
 InferredParameters {
@@ -866,7 +871,7 @@ commaSepTrailing<expr> { (expr ("," expr?)*)? }
   "="[@name=AssignOp]
 
   "===" "!=="
-  "?:" "?"
+  "?:" "?" "=>" "->"
   "b|" "b&" "b^" "b~" "b<<" "b>>" "b>>>"
 
   "{" "}" "(" ")" "[" "]" "." "," ";" ":" "\\"

@@ -29,6 +29,7 @@
   else @right
   scope @left
   typeArgs
+  struct @left
 }
 
 @top Program {
@@ -46,7 +47,9 @@ literal {
   CharacterLiteral |
   StringLiteral |
   TextBlock |
-  kw<"null">
+  kw<"null"> |
+  HashExpression |
+  StructLiteral
 }
 
 @skip {} {
@@ -169,6 +172,18 @@ SpreadExpression {
   SpreadOp { "..." } !spread expression
 }
 
+HashExpression {
+  "#" expression "#"
+}
+
+StructLiteral {
+  "{" commaSep1<StructEntry> "}"
+}
+
+StructEntry {
+  (Identifier | StringLiteral | ParenthesizedExpression) ":" expression
+}
+
 UnaryExpression {
   op<Arith, "+" | "-"> !unaryPlus expression |
   (op<Logic, "!"> | BoxLangNotOp) !negate expression |
@@ -272,7 +287,6 @@ statement[@isGroup=Statement] {
   declaration |
   Block |
   ExpressionStatement |
-  LabeledStatement |
   IfStatement |
   WhileStatement |
   ForStatement |
@@ -290,7 +304,8 @@ statement[@isGroup=Statement] {
   TryStatement |
   TryWithResourcesStatement |
   IncludeStatement |
-  ParamStatement
+  ParamStatement |
+  FunctionDeclaration
 }
 
 Block {
@@ -300,12 +315,6 @@ Block {
 ExpressionStatement {
   expression ";"
 }
-
-LabeledStatement {
-  Label ":" statement
-}
-
-Label { identifier | capitalIdentifier }
 
 AssertStatement {
   kw<"assert"> expression ";" |
@@ -330,11 +339,11 @@ DoStatement {
 }
 
 BreakStatement {
-  kw<"break"> Label? ";"
+  kw<"break"> ";"
 }
 
 ContinueStatement {
-  kw<"continue"> Label? ";"
+  kw<"continue"> ";"
 }
 
 ReturnStatement {
@@ -394,6 +403,10 @@ IncludeTarget {
 
 ParamStatement {
   kw<"param"> ParamAttributes ";"
+}
+
+FunctionDeclaration {
+  Modifiers? kw<"function"> Definition? FormalParameters (kw<"throws"> commaSep1<type>)? (Block | ";")
 }
 
 ParamAttributes {
@@ -737,7 +750,7 @@ FormalParameters {
 }
 
 FormalParameter {
-  Modifiers? unannotatedType variableDeclaratorId
+  Modifiers? unannotatedType variableDeclaratorId ("=" expression)?
 }
 
 ReceiverParameter {

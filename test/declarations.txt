@@ -574,3 +574,189 @@ Program(
       EnumConstant(Definition),
       EnumConstant(Definition),
       EnumConstant(Definition))))
+
+# function declaration with default parameters - literals
+
+function greet(String name = "World", Int count = 1) {
+    return "Hello " & name & " (" & count & ")";
+}
+
+==>
+
+Program(
+  FunctionDeclaration(
+    function,
+    Definition,
+    FormalParameters(
+      FormalParameter(TypeName, Definition, AssignOp, StringLiteral),
+      FormalParameter(TypeName, Definition, AssignOp, IntegerLiteral)
+    ),
+    Block(
+      ReturnStatement(return, BinaryExpression(BinaryExpression(BinaryExpression(BinaryExpression(StringLiteral, StringConcatOp, Identifier), StringConcatOp, StringLiteral), StringConcatOp, Identifier), StringConcatOp, StringLiteral))
+    )
+  )
+)
+
+
+# function declaration with default parameters - expressions
+
+function calculate(Numeric x, Numeric y = x * 2, Boolean debug = false) {
+    if (debug) {
+        writeOutput("Calculating: " & x & " + " & y);
+    }
+    return x + y;
+}
+
+==>
+
+Program(
+  FunctionDeclaration(
+    function,
+    Definition,
+    FormalParameters(
+      FormalParameter(TypeName, Definition),
+      FormalParameter(TypeName, Definition, AssignOp, BinaryExpression(Identifier, ArithOp, IntegerLiteral)),
+      FormalParameter(TypeName, Definition, AssignOp, BooleanLiteral)
+    ),
+    Block(
+      IfStatement(if, ParenthesizedExpression(Identifier), Block(
+        ExpressionStatement(MethodInvocation(MethodName(Identifier), ArgumentList(BinaryExpression(BinaryExpression(BinaryExpression(StringLiteral, StringConcatOp, Identifier), StringConcatOp, StringLiteral), StringConcatOp, Identifier))))
+      )),
+      ReturnStatement(return, BinaryExpression(Identifier, ArithOp, Identifier))
+    )
+  )
+)
+
+
+# function declaration with mixed default parameters
+
+function processData(
+    String data,
+    String prefix = "[" & getCurrentDateTime() & "] ",
+    Array options = [],
+    Struct config = { verbose: true, timeout: 30 }
+) {
+    var result = prefix & data;
+    if (config.verbose) {
+        writeOutput(result);
+    }
+    return result;
+}
+
+==>
+
+Program(
+  FunctionDeclaration(
+    function,
+    Definition,
+    FormalParameters(
+      FormalParameter(TypeName, Definition),
+      FormalParameter(TypeName, Definition, AssignOp, BinaryExpression(BinaryExpression(StringLiteral, StringConcatOp, MethodInvocation(MethodName(Identifier), ArgumentList())), StringConcatOp, StringLiteral)),
+      FormalParameter(TypeName, Definition, AssignOp, ArrayLiteral()),
+      FormalParameter(TypeName, Definition, AssignOp, StructLiteral(StructEntry(Identifier, BooleanLiteral), StructEntry(Identifier, IntegerLiteral)))
+    ),
+    Block(
+      LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, BinaryExpression(Identifier, StringConcatOp, Identifier))),
+      IfStatement(if, ParenthesizedExpression(FieldAccess(Identifier, Identifier)), Block(
+        ExpressionStatement(MethodInvocation(MethodName(Identifier), ArgumentList(Identifier)))
+      )),
+      ReturnStatement(return, Identifier)
+    )
+  )
+)
+
+
+# function declaration with complex default expressions
+
+function createUser(
+    String username,
+    String email = username & "@example.com",
+    String role = getUserDefaultRole(),
+    Date created = now(),
+    Struct metadata = {
+        source: "api",
+        version: getAppVersion(),
+        timestamp: getCurrentTimestamp()
+    }
+) {
+    return {
+        username: username,
+        email: email,
+        role: role,
+        created: created,
+        metadata: metadata
+    };
+}
+
+==>
+
+Program(
+  FunctionDeclaration(
+    function,
+    Definition,
+    FormalParameters(
+      FormalParameter(TypeName, Definition),
+      FormalParameter(TypeName, Definition, AssignOp, BinaryExpression(Identifier, StringConcatOp, StringLiteral)),
+      FormalParameter(TypeName, Definition, AssignOp, MethodInvocation(MethodName(Identifier), ArgumentList())),
+      FormalParameter(TypeName, Definition, AssignOp, MethodInvocation(MethodName(Identifier), ArgumentList())),
+      FormalParameter(TypeName, Definition, AssignOp, StructLiteral(
+        StructEntry(Identifier, StringLiteral),
+        StructEntry(Identifier, MethodInvocation(MethodName(Identifier), ArgumentList())),
+        StructEntry(Identifier, MethodInvocation(MethodName(Identifier), ArgumentList()))
+      ))
+    ),
+    Block(
+      ReturnStatement(return, StructLiteral(
+        StructEntry(Identifier, Identifier),
+        StructEntry(Identifier, Identifier),
+        StructEntry(Identifier, Identifier),
+        StructEntry(Identifier, Identifier),
+        StructEntry(Identifier, Identifier)
+      ))
+    )
+  )
+)
+
+
+# function with numeric default parameters
+
+function mathOperation(
+    Numeric a = 0,
+    Numeric b = 1.5,
+    String operation = "add",
+    Boolean useFloatingPoint = true
+) {
+    switch (operation) {
+        case "add":
+            return a + b;
+        case "multiply":
+            return a * b;
+        default:
+            return 0;
+    }
+}
+
+==>
+
+Program(
+  FunctionDeclaration(
+    function,
+    Definition,
+    FormalParameters(
+      FormalParameter(TypeName, Definition, AssignOp, IntegerLiteral),
+      FormalParameter(TypeName, Definition, AssignOp, FloatingPointLiteral),
+      FormalParameter(TypeName, Definition, AssignOp, StringLiteral),
+      FormalParameter(TypeName, Definition, AssignOp, BooleanLiteral)
+    ),
+    Block(
+      SwitchStatement(switch, ParenthesizedExpression(Identifier), SwitchBlock(
+        SwitchLabel(case, StringLiteral),
+        ReturnStatement(return, BinaryExpression(Identifier, ArithOp, Identifier)),
+        SwitchLabel(case, StringLiteral),
+        ReturnStatement(return, BinaryExpression(Identifier, ArithOp, Identifier)),
+        SwitchLabel(default),
+        ReturnStatement(return, IntegerLiteral)
+      ))
+    )
+  )
+)

@@ -32,14 +32,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm test
+      - name: Build & Run Tests
+        run: npm run build && npm run test
 
       - name: Run linting
         run: npm run lint
-
-      - name: Build library
-        run: npm run build
 
       - name: Check TypeScript types
         run: npx tsc --noEmit || true
@@ -50,7 +47,7 @@ jobs:
             echo "❌ Build failed - dist directory not created"
             exit 1
           fi
-          if [ ! -f "dist/index.js" ]; then
+          if [ ! -f "dist/boxlang.js" ]; then
             echo "❌ Build failed - main file not created"
             exit 1
           fi

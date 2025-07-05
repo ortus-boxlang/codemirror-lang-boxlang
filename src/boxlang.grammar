@@ -478,33 +478,11 @@ ElementValueArrayInitializer {
 }
 
 declaration {
-  ModuleDeclaration |
   PackageDeclaration |
   ImportDeclaration |
   ClassDeclaration |
   InterfaceDeclaration |
   AnnotationTypeDeclaration
-}
-
-ModuleDeclaration {
-  annotation* ckw<"open">? ckw<"module"> name ModuleBody
-}
-
-ModuleBody {
-  "{" ModuleDirective* "}"
-}
-
-ModuleDirective {
-  (kw<"requires"> requiresModifier* name |
-   kw<"exports"> name kw<"to">? commaSep<name> |
-   kw<"opens"> name kw<"to">? commaSep<name> |
-   kw<"uses"> name | kw<"provides"> name kw<"with"> commaSep1<name>)
-  ";"
-}
-
-requiresModifier {
-  kw<"transitive"> |
-  kw<"static">
 }
 
 PackageDeclaration {

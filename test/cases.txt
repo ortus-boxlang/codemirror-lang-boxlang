@@ -38,19 +38,28 @@ Program(IfStatement(if, ParenthesizedExpression(BooleanLiteral), Block(Expressio
 
 # BoxLang Types
 
-any myVar = "test";
-string name = "BoxLang";
-numeric count = 42;
+var myVar = "test";
+var userName = "BoxLang";
+var count = 42;
 
 ==>
 
-Program(LocalVariableDeclaration(PrimitiveType, VariableDeclarator(Definition, AssignOp, StringLiteral)), LocalVariableDeclaration(PrimitiveType, VariableDeclarator(Definition, AssignOp, StringLiteral)), LocalVariableDeclaration(PrimitiveType, VariableDeclarator(Definition, AssignOp, IntegerLiteral)))
+Program(LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, StringLiteral)), LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, StringLiteral)), LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, IntegerLiteral)))
 
 # String Concatenation
 
-string fullName = firstName & " " & lastName;
-string message = "Hello " & name & "!";
+var fullName = firstName & " " & lastName;
+var message = "Hello " & userName & "!";
 
 ==>
 
-Program(LocalVariableDeclaration(PrimitiveType, VariableDeclarator(Definition, AssignOp, BinaryExpression(BinaryExpression(Identifier, StringConcatOp, StringLiteral), StringConcatOp, Identifier))), LocalVariableDeclaration(PrimitiveType, VariableDeclarator(Definition, AssignOp, BinaryExpression(BinaryExpression(StringLiteral, StringConcatOp, Identifier), StringConcatOp, StringLiteral))))
+Program(LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, BinaryExpression(BinaryExpression(Identifier, StringConcatOp, StringLiteral), StringConcatOp, Identifier))), LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, BinaryExpression(BinaryExpression(StringLiteral, StringConcatOp, Identifier), StringConcatOp, StringLiteral))))
+
+# BoxLang Implicit Variable Assignment
+
+myVar = "test";
+anotherVariable = myVar;
+
+==>
+
+Program(ExpressionStatement(AssignmentExpression(Identifier, AssignOp, StringLiteral)), ExpressionStatement(AssignmentExpression(Identifier, AssignOp, Identifier)))

@@ -265,13 +265,13 @@ Dimension {
 
 statement[@isGroup=Statement] {
   declaration |
+  Block |
   ExpressionStatement |
   LabeledStatement |
   IfStatement |
   WhileStatement |
   ForStatement |
   EnhancedForStatement |
-  Block |
   ";" |
   AssertStatement |
   SwitchStatement |
@@ -283,7 +283,9 @@ statement[@isGroup=Statement] {
   LocalVariableDeclaration |
   ThrowStatement |
   TryStatement |
-  TryWithResourcesStatement
+  TryWithResourcesStatement |
+  IncludeStatement |
+  ParamStatement
 }
 
 Block {
@@ -374,6 +376,31 @@ Resource {
   Modifiers? unannotatedType variableDeclaratorId "=" expression |
   Identifier |
   FieldAccess
+}
+
+IncludeStatement {
+  kw<"include"> IncludeTarget ";"
+}
+
+IncludeTarget {
+  kw<"template"> "=" expression |
+  expression
+}
+
+ParamStatement {
+  kw<"param"> ParamAttributes ";"
+}
+
+ParamAttributes {
+  commaSep1<ParamAttribute>
+}
+
+ParamAttribute {
+  ParamName "=" expression
+}
+
+ParamName {
+  kw<"type"> | kw<"default"> | kw<"required"> | kw<"min"> | kw<"pattern"> | kw<"maxlength"> | kw<"minlength">
 }
 
 IfStatement {
@@ -467,7 +494,15 @@ PackageDeclaration {
 }
 
 ImportDeclaration {
-  kw<"import"> kw<"static">? name ("." Asterisk)? ";"
+  kw<"import"> kw<"static">? (ObjectResolverPrefix? name ("." Asterisk)?) ImportAlias? ";"
+}
+
+ObjectResolverPrefix {
+  (Identifier | StringLiteral) ":"
+}
+
+ImportAlias {
+  kw<"as"> Identifier
 }
 
 EnumDeclaration {
@@ -826,9 +861,12 @@ commaSepTrailing<expr> { (expr ("," expr?)*)? }
   @precedence { "b>>", identifier }
   @precedence { "b>>>", identifier }
 
+  @precedence { "?:", "?" }
+
   "="[@name=AssignOp]
 
   "===" "!=="
+  "?:" "?"
   "b|" "b&" "b^" "b~" "b<<" "b>>" "b>>>"
 
   "{" "}" "(" ")" "[" "]" "." "," ";" ":" "\\"

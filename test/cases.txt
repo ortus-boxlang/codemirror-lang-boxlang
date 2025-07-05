@@ -76,9 +76,9 @@ var blockClosure = (a, b) => { return a - b; };
 ==>
 
 Program(
-  LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, LambdaExpression(InferredParameters(Definition), BinaryExpression(Identifier, ArithOp, IntegerLiteral)))),
-  LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, ClosureExpression(InferredParameters(Definition), BinaryExpression(Identifier, ArithOp, IntegerLiteral)))),
+  LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, LambdaExpression(Arguments(Parameter(Definition)), BinaryExpression(Identifier, ArithOp, IntegerLiteral)))),
+  LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, ClosureExpression(Arguments(Parameter(Definition)), BinaryExpression(Identifier, ArithOp, IntegerLiteral)))),
   LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, LambdaExpression(Definition, BinaryExpression(Identifier, ArithOp, IntegerLiteral)))),
   LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, ClosureExpression(Definition, BinaryExpression(Identifier, ArithOp, IntegerLiteral)))),
-  LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, LambdaExpression(InferredParameters(Definition, Definition), Block(ReturnStatement(return, BinaryExpression(Identifier, ArithOp, Identifier)))))),
-  LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, ClosureExpression(InferredParameters(Definition, Definition), Block(ReturnStatement(return, BinaryExpression(Identifier, ArithOp, Identifier)))))))
+  LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, LambdaExpression(Arguments(Parameter(Definition), Parameter(Definition)), Block(ReturnStatement(return, BinaryExpression(Identifier, ArithOp, Identifier)))))),
+  LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, ClosureExpression(Arguments(Parameter(Definition), Parameter(Definition)), Block(ReturnStatement(return, BinaryExpression(Identifier, ArithOp, Identifier)))))))

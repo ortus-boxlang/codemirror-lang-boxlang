@@ -149,15 +149,11 @@ CastAsExpression {
 }
 
 LambdaExpression {
-  (Definition | FormalParameters | InferredParameters) "->" (expression | Block)
+  (Definition | Arguments) "->" (expression | Block)
 }
 
 ClosureExpression {
-  (Definition | FormalParameters | InferredParameters) "=>" (expression | Block)
-}
-
-InferredParameters {
-  "(" commaSep1<Definition ~identifier> ")"
+  (Definition | Arguments) "=>" (expression | Block)
 }
 
 TernaryExpression {
@@ -406,7 +402,7 @@ ParamStatement {
 }
 
 FunctionDeclaration {
-  Modifiers? kw<"function"> Definition? FormalParameters (kw<"throws"> commaSep1<type>)? (Block | ";")
+  Modifiers? kw<"function"> Definition? Arguments (kw<"throws"> commaSep1<type>)? (Block | ";")
 }
 
 ParamAttributes {
@@ -603,7 +599,7 @@ ConstructorDeclaration {
 }
 
 constructorDeclarator {
-  TypeParameters? Definition FormalParameters
+  TypeParameters? Definition Arguments
 }
 
 ConstructorBody {
@@ -742,23 +738,15 @@ methodHeader {
 }
 
 methodDeclarator {
-  Definition FormalParameters Dimension*
+  Definition Arguments Dimension*
 }
 
-FormalParameters {
-  "(" ReceiverParameter? commaSep<FormalParameter | SpreadParameter> ")"
+Arguments {
+  "(" commaSep<Parameter> ")"
 }
 
-FormalParameter {
-  Modifiers? unannotatedType variableDeclaratorId ("=" expression)?
-}
-
-ReceiverParameter {
-  annotation* unannotatedType (Identifier ".")? kw<"this">
-}
-
-SpreadParameter {
-  Modifiers? unannotatedType "..." VariableDeclarator
+Parameter {
+  Modifiers? unannotatedType? Definition ("=" expression)?
 }
 
 Throws {

@@ -587,9 +587,9 @@ Program(
   FunctionDeclaration(
     function,
     Definition,
-    FormalParameters(
-      FormalParameter(TypeName, Definition, AssignOp, StringLiteral),
-      FormalParameter(TypeName, Definition, AssignOp, IntegerLiteral)
+    Arguments(
+      Parameter(TypeName, Definition, AssignOp, StringLiteral),
+      Parameter(TypeName, Definition, AssignOp, IntegerLiteral)
     ),
     Block(
       ReturnStatement(return, BinaryExpression(BinaryExpression(BinaryExpression(BinaryExpression(StringLiteral, StringConcatOp, Identifier), StringConcatOp, StringLiteral), StringConcatOp, Identifier), StringConcatOp, StringLiteral))

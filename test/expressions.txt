@@ -895,3 +895,40 @@ Program(
       BinaryExpression(Identifier,CompareOp,Identifier)),
     BoxLangLogicOp(or),
     BinaryExpression(Identifier,BoxLangContainsOp(contains),Identifier))))
+
+# BoxLang Elvis Operator (Null Coalescing)
+
+result ?: defaultValue;
+name ?: "Anonymous";
+getValue() ?: 0;
+
+==>
+
+Program(
+  ExpressionStatement(ElvisExpression(Identifier,ElvisOp,Identifier)),
+  ExpressionStatement(ElvisExpression(Identifier,ElvisOp,StringLiteral)),
+  ExpressionStatement(ElvisExpression(MethodInvocation(MethodName(Identifier),ArgumentList),ElvisOp,IntegerLiteral)))
+
+# BoxLang Safe Navigation Operator
+
+obj?.property;
+result?.value?.nested;
+
+==>
+
+Program(
+  ExpressionStatement(SafeFieldAccess(Identifier,SafeNavOp,Identifier)),
+  ExpressionStatement(SafeFieldAccess(SafeFieldAccess(Identifier,SafeNavOp,Identifier),SafeNavOp,Identifier)))
+
+# BoxLang Spread Operator
+
+...array;
+sum(...numbers);
+[1, 2, ...rest];
+
+==>
+
+Program(
+  ExpressionStatement(SpreadExpression(SpreadOp,Identifier)),
+  ExpressionStatement(MethodInvocation(MethodName(Identifier),ArgumentList(SpreadExpression(SpreadOp,Identifier)))),
+  ExpressionStatement(ArrayLiteral(IntegerLiteral,IntegerLiteral,SpreadExpression(SpreadOp,Identifier))))

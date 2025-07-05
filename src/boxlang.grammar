@@ -16,6 +16,7 @@
   xor @left
   eqv @left
   imp @left
+  elvis @right
   instanceof
   ternary @right
   valuePair
@@ -55,6 +56,8 @@ expression[@isGroup=Expression] {
   InstanceofExpression |
   LambdaExpression |
   TernaryExpression |
+  ElvisExpression |
+  SpreadExpression |
   UpdateExpression |
   baseExpression |
   UnaryExpression |
@@ -66,7 +69,7 @@ CastExpression {
 }
 
 AssignmentExpression {
-  (Identifier | FieldAccess | ArrayAccess)
+  (Identifier | FieldAccess | SafeFieldAccess | ArrayAccess)
   !assign (AssignOp | "=") expression
 }
 
@@ -134,6 +137,14 @@ TernaryExpression {
   expression !ternary op<Logic, "?"> expression ":" expression
 }
 
+ElvisExpression {
+  expression !elvis ElvisOp { "?:" } expression
+}
+
+SpreadExpression {
+  SpreadOp { "..." } expression
+}
+
 UnaryExpression {
   op<Arith, "+" | "-"> !unaryPlus expression |
   (op<Logic, "!"> | BoxLangNotOp) !negate expression
@@ -152,7 +163,9 @@ baseExpression {
   ParenthesizedExpression |
   ObjectCreationExpression |
   FieldAccess |
+  SafeFieldAccess |
   ArrayAccess |
+  ArrayLiteral |
   MethodInvocation |
   MethodReference |
   ArrayCreationExpression
@@ -185,8 +198,16 @@ FieldAccess {
   (baseExpression | kw<"super">) ("." kw<"super">)? "." (Identifier | kw<"this">)
 }
 
+SafeFieldAccess {
+  (baseExpression | kw<"super">) SafeNavOp { "?." } (Identifier | kw<"this">)
+}
+
 ArrayAccess {
   baseExpression "[" expression "]"
+}
+
+ArrayLiteral {
+  "[" commaSepTrailing<expression> "]"
 }
 
 MethodName { Identifier }

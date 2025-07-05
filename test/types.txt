@@ -19,7 +19,7 @@ Program(
       MethodDeclaration(
         PrimitiveType,
         Definition,
-        FormalParameters,
+        Arguments,
         Block(
           LocalVariableDeclaration(
             PrimitiveType,
@@ -56,7 +56,7 @@ Program(
       MethodDeclaration(
         PrimitiveType,
         Definition,
-        FormalParameters,
+        Arguments,
         Block(
           LocalVariableDeclaration(
             PrimitiveType,

@@ -288,8 +288,8 @@ Program(
         Modifiers(public, static),
         void,
         Definition,
-        FormalParameters(
-          FormalParameter(
+        Arguments(
+          Parameter(
             ArrayType(
               TypeName,
               Dimension),
@@ -418,7 +418,7 @@ Program(
         Modifiers(MarkerAnnotation(Identifier), public),
         void,
         Definition,
-        FormalParameters,
+        Arguments,
         Block))))
 
 
@@ -460,13 +460,13 @@ Program(
       MethodDeclaration(
         void,
         Definition,
-        FormalParameters,
+        Arguments("(", ")"),
         Block(
           ExpressionStatement(LambdaExpression(
             Definition,
             Identifier)),
           ExpressionStatement(LambdaExpression(
-            InferredParameters(Definition, Definition),
+            Arguments("(", Parameter(Definition), ",", Parameter(Definition), ")"),
             BinaryExpression(Identifier, ArithOp, Identifier))))))))
 
 
@@ -502,8 +502,8 @@ Program(
         Modifiers(public, static),
         void,
         Definition,
-        FormalParameters(
-          FormalParameter(
+        Arguments(
+          Parameter(
             ArrayType(
               TypeName,
               Dimension),
@@ -577,8 +577,8 @@ Program(
       ConstructorDeclaration(
         Modifiers(public),
         Definition,
-        FormalParameters(
-          FormalParameter(
+        Arguments(
+          Parameter(
             TypeName,
             Definition)),
         ConstructorBody(
@@ -634,7 +634,7 @@ Program(
               TypeName,
               TypeArguments(TypeName)),
             Definition,
-            FormalParameters,
+            Arguments,
             Block(
               LocalVariableDeclaration(
                 GenericType(
@@ -656,8 +656,8 @@ Program(
               Definition)),
           void,
             Definition,
-            FormalParameters(
-              FormalParameter(
+            Arguments(
+              Parameter(
                 TypeName,
                 Definition)),
             Block(

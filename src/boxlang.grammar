@@ -30,6 +30,7 @@
   scope @left
   typeArgs
   struct @left
+  propertyLong
 }
 
 @top Program {
@@ -231,11 +232,15 @@ unqualifiedObjectCreationExpression {
 }
 
 FieldAccess {
-  (baseExpression | kw<"super">) ("." kw<"super">)? "." (Identifier | kw<"this">)
+  (baseExpression | kw<"super">) ("." kw<"super">)? "." anyFieldName
 }
 
 SafeFieldAccess {
-  (baseExpression | kw<"super">) SafeNavOp { "?." } (Identifier | kw<"this">)
+  (baseExpression | kw<"super">) SafeNavOp { "?." } anyFieldName
+}
+
+anyFieldName {
+  [@dynamicPrecedence=1] { Identifier }
 }
 
 ArrayAccess {
@@ -478,8 +483,7 @@ declaration {
   ImportDeclaration |
   ClassDeclaration |
   InterfaceDeclaration |
-  AnnotationTypeDeclaration |
-  EnumDeclaration
+  AnnotationTypeDeclaration
 }
 
 ModuleDeclaration {
@@ -519,24 +523,8 @@ ImportAlias {
   kw<"as"> Identifier
 }
 
-EnumDeclaration {
-  Modifiers? kw<"enum"> Definition SuperInterfaces? EnumBody
-}
-
-EnumBody {
-  "{" commaSepTrailing<EnumConstant> EnumBodyDeclarations? "}"
-}
-
-EnumBodyDeclarations {
-  ";" classBodyDeclaration*
-}
-
-EnumConstant {
-  Modifiers? Definition ArgumentList? ClassBody?
-}
-
 ClassDeclaration {
-  Modifiers? kw<"class"> Definition TypeParameters? Superclass? SuperInterfaces? ClassBody
+  Modifiers? kw<"class"> Definition? TypeParameters? Superclass? SuperInterfaces? ClassBody
 }
 
 Modifiers {
@@ -578,12 +566,11 @@ ClassBody {
 }
 
 classBodyDeclaration {
-  FieldDeclaration |
+  PropertyDeclaration |
   MethodDeclaration |
   ClassDeclaration |
   InterfaceDeclaration |
   AnnotationTypeDeclaration |
-  EnumDeclaration |
   Block |
   StaticInitializer |
   ConstructorDeclaration |
@@ -596,6 +583,32 @@ StaticInitializer {
 
 ConstructorDeclaration {
   Modifiers? constructorDeclarator Throws? ConstructorBody
+}
+
+PropertyDeclaration {
+  annotation* kw<"property"> PropertyBody ";"
+}
+
+PropertyBody {
+  PropertyLongForm { !propertyLong PropertyAttribute+ } |
+  PropertyShortForm { unannotatedType? PropertyName (kw<"default"> "=" expression)? }
+}
+
+PropertyAttribute {
+  PropertyAttributeName "=" PropertyValue
+}
+
+PropertyAttributeName {
+  [@dynamicPrecedence=1] { Identifier } |
+  kw<"type"> | kw<"default"> | kw<"required"> | kw<"name"> | kw<"setter"> | kw<"getter">
+}
+
+PropertyName {
+  Identifier
+}
+
+PropertyValue {
+  literal | Identifier | MethodInvocation | FieldAccess
 }
 
 constructorDeclarator {
@@ -617,10 +630,6 @@ name {
 
 ScopedIdentifier {
   name "." Identifier
-}
-
-FieldDeclaration {
-  Modifiers? unannotatedType commaSep1<VariableDeclarator> ";"
 }
 
 AnnotationTypeDeclaration {
@@ -656,7 +665,6 @@ ExtendsInterfaces {
 InterfaceBody {
   "{" (
     ConstantDeclaration |
-    EnumDeclaration |
     MethodDeclaration |
     ClassDeclaration |
     InterfaceDeclaration |
@@ -698,7 +706,7 @@ unannotatedType {
 
 simpleType {
   kw<"void"> |
-  @specialize[@name=PrimitiveType]<identifier, "byte" | "short" | "int" | "long" | "char" | "float" | "double" | "boolean" | "any" | "string" | "numeric"> |
+  @specialize[@name=PrimitiveType]<identifier, "byte" | "short" | "int" | "long" | "char" | "float" | "double" | "boolean" | "any" | "string" | "numeric" | "array" | "struct" | "query" | "date" | "component" | "number"> |
   TypeName |
   ScopedTypeName |
   GenericType
@@ -868,11 +876,12 @@ commaSepTrailing<expr> { (expr ("," expr?)*)? }
   @precedence { "b>>>", identifier }
 
   @precedence { "?:", "?" }
+  @precedence { "?.", "?" }
 
   "="[@name=AssignOp]
 
   "===" "!=="
-  "?:" "?" "=>" "->"
+  "?:" "?." "?" "=>" "->"
   "b|" "b&" "b^" "b~" "b<<" "b>>" "b>>>"
 
   "{" "}" "(" ")" "[" "]" "." "," ";" ":" "\\"

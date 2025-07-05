@@ -1,0 +1,165 @@
+## Simple property with name only (short form)
+class{
+  property firstName;
+}
+
+==>
+
+Program(
+  ClassDeclaration(
+    class,
+    ClassBody(
+      "{",
+      PropertyDeclaration(property, PropertyBody(PropertyShortForm(PropertyName(Identifier))), ";"),
+      "}"
+    )
+  )
+)
+
+## Property with type (short form)
+class{
+  property numeric age;
+}
+
+==>
+
+Program(
+  ClassDeclaration(
+    class,
+    ClassBody(
+      "{",
+      PropertyDeclaration(property, PropertyBody(PropertyShortForm(PrimitiveType, PropertyName(Identifier))), ";"),
+      "}"
+    )
+  )
+)
+
+## Property with type and default (short form)
+class{
+  property numeric age default=1;
+}
+
+==>
+
+Program(
+  ClassDeclaration(
+    class,
+    ClassBody(
+      "{",
+      PropertyDeclaration(property, PropertyBody(PropertyShortForm(PrimitiveType, PropertyName(Identifier), default, AssignOp, IntegerLiteral)), ";"),
+      "}"
+    )
+  )
+)
+
+## Property with attributes (long form)
+class{
+  property name="firstName" type="string" default="boxlang";
+}
+
+==>
+
+Program(
+  ClassDeclaration(
+    class,
+    ClassBody(
+      "{",
+      PropertyDeclaration(
+        property,
+        PropertyBody(
+          PropertyLongForm(
+            PropertyAttribute(PropertyAttributeName(name), AssignOp, PropertyValue(StringLiteral)),
+            PropertyAttribute(PropertyAttributeName(type), AssignOp, PropertyValue(StringLiteral)),
+            PropertyAttribute(PropertyAttributeName(default), AssignOp, PropertyValue(StringLiteral))
+          )
+        ),
+        ";"
+      ),
+      "}"
+    )
+  )
+)
+
+## Property with custom attributes
+class{
+  property customAttribute="value" validate="myValidator" required=true;
+}
+
+==>
+
+Program(
+  ClassDeclaration(
+    class,
+    ClassBody(
+      "{",
+      PropertyDeclaration(
+        property,
+        PropertyBody(
+          PropertyLongForm(
+            PropertyAttribute(PropertyAttributeName(Identifier), AssignOp, PropertyValue(StringLiteral)),
+            PropertyAttribute(PropertyAttributeName(Identifier), AssignOp, PropertyValue(StringLiteral)),
+            PropertyAttribute(PropertyAttributeName(required), AssignOp, PropertyValue(BooleanLiteral))
+          )
+        ),
+        ";"
+      ),
+      "}"
+    )
+  )
+)
+
+## Property with numeric and function call values
+class{
+  property maxLength=100 validator=myFunc();
+}
+
+==>
+
+Program(
+  ClassDeclaration(
+    class,
+    ClassBody(
+      "{",
+      PropertyDeclaration(
+        property,
+        PropertyBody(
+          PropertyLongForm(
+            PropertyAttribute(PropertyAttributeName(Identifier), AssignOp, PropertyValue(IntegerLiteral)),
+            PropertyAttribute(PropertyAttributeName(Identifier), AssignOp, PropertyValue(MethodInvocation(MethodName(Identifier), ArgumentList("(", ")"))))
+          )
+        ),
+        ";"
+      ),
+      "}"
+    )
+  )
+)
+
+## Mixed short and long form scenarios - short takes precedence
+class{
+  property string firstName default="test";
+  property name="otherAttr" default="value";
+}
+
+==>
+
+Program(
+  ClassDeclaration(
+    class,
+    ClassBody(
+      "{",
+      PropertyDeclaration(property, PropertyBody(PropertyShortForm(PrimitiveType, PropertyName(Identifier), default, AssignOp, StringLiteral)), ";"),
+      PropertyDeclaration(
+        property,
+        PropertyBody(
+          PropertyLongForm(
+            PropertyAttribute(PropertyAttributeName(name), AssignOp, PropertyValue(StringLiteral)),
+            PropertyAttribute(PropertyAttributeName(default), AssignOp, PropertyValue(StringLiteral))
+          )
+        ),
+        ";"
+      ),
+      "}"
+    )
+  )
+)

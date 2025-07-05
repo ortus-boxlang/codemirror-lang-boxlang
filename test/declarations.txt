@@ -1,8 +1,8 @@
 # local variable
 
 class A {
-  public int b() {
-    int c = 5;
+  public void b() {
+    var c = 5;
   }
 }
 
@@ -12,18 +12,23 @@ Program(
   ClassDeclaration(class,
     Definition,
     ClassBody(
+      "{",
       MethodDeclaration(
         Modifiers(public),
-        PrimitiveType,
+        void,
         Definition,
-        FormalParameters,
+        Arguments("(", ")"),
         Block(
+          "{",
           LocalVariableDeclaration(
-            PrimitiveType,
+            var,
             VariableDeclarator(
               Definition,
               AssignOp,
-              IntegerLiteral)))))))
+              IntegerLiteral),
+            ";"),
+          "}")),
+      "}")))
 
 
 # local array variable
@@ -316,7 +321,7 @@ Program(
 # class declaration with body
 
 class Point {
-  int x;
+  property numeric x;
 
   void bar() {
     x = 2;
@@ -329,13 +334,11 @@ Program(
   ClassDeclaration(class,
     Definition,
     ClassBody(
-      FieldDeclaration(
-        PrimitiveType,
-        VariableDeclarator(Definition)),
+      PropertyDeclaration(property, PropertyBody(PropertyShortForm(PrimitiveType, PropertyName(Identifier)))),
       MethodDeclaration(
         void,
         Definition,
-        FormalParameters,
+        Arguments("(", ")"),
         Block(
           ExpressionStatement(
             AssignmentExpression(Identifier, AssignOp, IntegerLiteral)))))))
@@ -404,19 +407,26 @@ Program(
       MethodDeclaration(
         void,
         Definition,
-        FormalParameters(
-          FormalParameter(PrimitiveType, Definition),
-          FormalParameter(PrimitiveType, Definition),
-          FormalParameter(PrimitiveType, Definition),
-          FormalParameter(PrimitiveType, Definition)),
-        Block(LineComment)))))
+        Arguments(
+          "(",
+          Parameter(PrimitiveType, Definition),
+          ",",
+          Parameter(PrimitiveType, Definition),
+          ",",
+          Parameter(PrimitiveType, Definition),
+          ",",
+          Parameter(PrimitiveType, Definition),
+          ")"),
+        Block("{", LineComment, "}")))))
 
 
 # constructor declaration
 
 class Point {
-  int x, y;
-  Point(int x, int y) {
+  property numeric x;
+  property numeric y;
+
+  Point(numeric x, numeric y) {
     this.x = x;
     this.y = y;
   }
@@ -432,42 +442,86 @@ Program(
   ClassDeclaration(class,
     Definition,
     ClassBody(
-      FieldDeclaration(
-        PrimitiveType,
-        VariableDeclarator(Definition),
-        VariableDeclarator(Definition)),
+      "{",
+      PropertyDeclaration(
+        property,
+        PropertyBody(
+          PropertyShortForm(
+            PrimitiveType,
+            PropertyName(Identifier)
+          )
+        ),
+        ";"
+      ),
+      PropertyDeclaration(
+        property,
+        PropertyBody(
+          PropertyShortForm(
+            PrimitiveType,
+            PropertyName(Identifier)
+          )
+        ),
+        ";"
+      ),
       ConstructorDeclaration(
         Definition,
-        FormalParameters(
-          FormalParameter(
+        Arguments(
+          "(",
+          Parameter(
             PrimitiveType,
-            Definition),
-          FormalParameter(
+            Definition
+          ),
+          ",",
+          Parameter(
             PrimitiveType,
-            Definition)),
+            Definition
+          ),
+          ")"
+        ),
         ConstructorBody(
-          ExpressionStatement(AssignmentExpression(
-            FieldAccess(
-              this,
-              Identifier),
-            AssignOp,
-            Identifier)),
-          ExpressionStatement(AssignmentExpression(
-            FieldAccess(
-              this,
-              Identifier),
-            AssignOp,
-            Identifier)))),
+          "{",
+          ExpressionStatement(
+            AssignmentExpression(
+              FieldAccess(this, ".", Identifier),
+              AssignOp,
+              Identifier
+            ),
+            ";"
+          ),
+          ExpressionStatement(
+            AssignmentExpression(
+              FieldAccess(this, ".", Identifier),
+              AssignOp,
+              Identifier
+            ),
+            ";"
+          ),
+          "}"
+        )
+      ),
       ConstructorDeclaration(
         Definition,
-        FormalParameters,
+        Arguments("(", ")"),
         ConstructorBody(
+          "{",
           ExplicitConstructorInvocation(
             this,
             ArgumentList(
+              "(",
               IntegerLiteral,
-              IntegerLiteral)))))))
-
+              ",",
+              IntegerLiteral,
+              ")"
+            ),
+            ";"
+          ),
+          "}"
+        )
+      ),
+      "}"
+    )
+  )
+)
 
 # throws
 
@@ -486,7 +540,7 @@ Program(
         MethodDeclaration(
           TypeName,
           Definition,
-          FormalParameters,
+          Arguments("(", ")"),
           Throws(throws,TypeName),
           Block(
             ExpressionStatement(
@@ -521,7 +575,7 @@ Program(
         Modifiers(public),
         PrimitiveType,
         Definition,
-        FormalParameters,
+        Arguments("(", ")"),
         Block(
           ExpressionStatement(
             ObjectCreationExpression(new,
@@ -538,7 +592,7 @@ Program(
 
 class JayZ {
   public void Beyonce() {
-    int blue_ivy_carter;
+    var blue_ivy_carter;
   };
 }
 
@@ -548,36 +602,25 @@ Program(
   ClassDeclaration(class,
     Definition,
     ClassBody(
+      "{",
       MethodDeclaration(
         Modifiers(public),
         void,
         Definition,
-        FormalParameters,
+        Arguments("(", ")"),
         Block(
+          "{",
           LocalVariableDeclaration(
-            PrimitiveType,
-            VariableDeclarator(Definition)))))))
-
-
-# enum declaration
-
-enum HandSign {
-   SCISSOR, PAPER, STONE
-}
-
-==>
-
-Program(
-  EnumDeclaration(enum,
-    Definition,
-    EnumBody(
-      EnumConstant(Definition),
-      EnumConstant(Definition),
-      EnumConstant(Definition))))
+            var,
+            VariableDeclarator(Definition),
+            ";"),
+          "}")),
+      ";",
+      "}")))
 
 # function declaration with default parameters - literals
 
-function greet(String name = "World", Int count = 1) {
+function greet(string name = "World", int count = 1) {
     return "Hello " & name & " (" & count & ")";
 }
 
@@ -588,8 +631,8 @@ Program(
     function,
     Definition,
     Arguments(
-      Parameter(TypeName, Definition, AssignOp, StringLiteral),
-      Parameter(TypeName, Definition, AssignOp, IntegerLiteral)
+      Parameter(PrimitiveType, Definition, AssignOp, StringLiteral),
+      Parameter(PrimitiveType, Definition, AssignOp, IntegerLiteral)
     ),
     Block(
       ReturnStatement(return, BinaryExpression(BinaryExpression(BinaryExpression(BinaryExpression(StringLiteral, StringConcatOp, Identifier), StringConcatOp, StringLiteral), StringConcatOp, Identifier), StringConcatOp, StringLiteral))
@@ -600,7 +643,7 @@ Program(
 
 # function declaration with default parameters - expressions
 
-function calculate(Numeric x, Numeric y = x * 2, Boolean debug = false) {
+function calculate(numeric x, numeric y = x * 2, boolean debug = false) {
     if (debug) {
         writeOutput("Calculating: " & x & " + " & y);
     }
@@ -613,10 +656,10 @@ Program(
   FunctionDeclaration(
     function,
     Definition,
-    FormalParameters(
-      FormalParameter(TypeName, Definition),
-      FormalParameter(TypeName, Definition, AssignOp, BinaryExpression(Identifier, ArithOp, IntegerLiteral)),
-      FormalParameter(TypeName, Definition, AssignOp, BooleanLiteral)
+    Arguments(
+      Parameter(PrimitiveType, Definition),
+      Parameter(PrimitiveType, Definition, AssignOp, BinaryExpression(Identifier, ArithOp, IntegerLiteral)),
+      Parameter(PrimitiveType, Definition, AssignOp, BooleanLiteral)
     ),
     Block(
       IfStatement(if, ParenthesizedExpression(Identifier), Block(
@@ -631,10 +674,10 @@ Program(
 # function declaration with mixed default parameters
 
 function processData(
-    String data,
-    String prefix = "[" & getCurrentDateTime() & "] ",
-    Array options = [],
-    Struct config = { verbose: true, timeout: 30 }
+    string data,
+    string prefix = "[" & getCurrentDateTime() & "] ",
+    array options = [],
+    struct config = { verbose: true, timeout: 30 }
 ) {
     var result = prefix & data;
     if (config.verbose) {
@@ -649,11 +692,11 @@ Program(
   FunctionDeclaration(
     function,
     Definition,
-    FormalParameters(
-      FormalParameter(TypeName, Definition),
-      FormalParameter(TypeName, Definition, AssignOp, BinaryExpression(BinaryExpression(StringLiteral, StringConcatOp, MethodInvocation(MethodName(Identifier), ArgumentList())), StringConcatOp, StringLiteral)),
-      FormalParameter(TypeName, Definition, AssignOp, ArrayLiteral()),
-      FormalParameter(TypeName, Definition, AssignOp, StructLiteral(StructEntry(Identifier, BooleanLiteral), StructEntry(Identifier, IntegerLiteral)))
+    Arguments(
+      Parameter(PrimitiveType, Definition),
+      Parameter(PrimitiveType, Definition, AssignOp, BinaryExpression(BinaryExpression(StringLiteral, StringConcatOp, MethodInvocation(MethodName(Identifier), ArgumentList())), StringConcatOp, StringLiteral)),
+      Parameter(PrimitiveType, Definition, AssignOp, ArrayLiteral()),
+      Parameter(PrimitiveType, Definition, AssignOp, StructLiteral(StructEntry(Identifier, BooleanLiteral), StructEntry(Identifier, IntegerLiteral)))
     ),
     Block(
       LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, BinaryExpression(Identifier, StringConcatOp, Identifier))),
@@ -669,11 +712,11 @@ Program(
 # function declaration with complex default expressions
 
 function createUser(
-    String username,
-    String email = username & "@example.com",
-    String role = getUserDefaultRole(),
-    Date created = now(),
-    Struct metadata = {
+    string username,
+    string email = username & "@example.com",
+    string role = getUserDefaultRole(),
+    date created = now(),
+    struct metadata = {
         source: "api",
         version: getAppVersion(),
         timestamp: getCurrentTimestamp()
@@ -694,12 +737,12 @@ Program(
   FunctionDeclaration(
     function,
     Definition,
-    FormalParameters(
-      FormalParameter(TypeName, Definition),
-      FormalParameter(TypeName, Definition, AssignOp, BinaryExpression(Identifier, StringConcatOp, StringLiteral)),
-      FormalParameter(TypeName, Definition, AssignOp, MethodInvocation(MethodName(Identifier), ArgumentList())),
-      FormalParameter(TypeName, Definition, AssignOp, MethodInvocation(MethodName(Identifier), ArgumentList())),
-      FormalParameter(TypeName, Definition, AssignOp, StructLiteral(
+    Arguments(
+      Parameter(PrimitiveType, Definition),
+      Parameter(PrimitiveType, Definition, AssignOp, BinaryExpression(Identifier, StringConcatOp, StringLiteral)),
+      Parameter(PrimitiveType, Definition, AssignOp, MethodInvocation(MethodName(Identifier), ArgumentList())),
+      Parameter(PrimitiveType, Definition, AssignOp, MethodInvocation(MethodName(Identifier), ArgumentList())),
+      Parameter(PrimitiveType, Definition, AssignOp, StructLiteral(
         StructEntry(Identifier, StringLiteral),
         StructEntry(Identifier, MethodInvocation(MethodName(Identifier), ArgumentList())),
         StructEntry(Identifier, MethodInvocation(MethodName(Identifier), ArgumentList()))
@@ -721,10 +764,10 @@ Program(
 # function with numeric default parameters
 
 function mathOperation(
-    Numeric a = 0,
-    Numeric b = 1.5,
-    String operation = "add",
-    Boolean useFloatingPoint = true
+    numeric a = 0,
+    numeric b = 1.5,
+    string operation = "add",
+    boolean useFloatingPoint = true
 ) {
     switch (operation) {
         case "add":
@@ -742,11 +785,11 @@ Program(
   FunctionDeclaration(
     function,
     Definition,
-    FormalParameters(
-      FormalParameter(TypeName, Definition, AssignOp, IntegerLiteral),
-      FormalParameter(TypeName, Definition, AssignOp, FloatingPointLiteral),
-      FormalParameter(TypeName, Definition, AssignOp, StringLiteral),
-      FormalParameter(TypeName, Definition, AssignOp, BooleanLiteral)
+    Arguments(
+      Parameter(PrimitiveType, Definition, AssignOp, IntegerLiteral),
+      Parameter(PrimitiveType, Definition, AssignOp, FloatingPointLiteral),
+      Parameter(PrimitiveType, Definition, AssignOp, StringLiteral),
+      Parameter(PrimitiveType, Definition, AssignOp, BooleanLiteral)
     ),
     Block(
       SwitchStatement(switch, ParenthesizedExpression(Identifier), SwitchBlock(

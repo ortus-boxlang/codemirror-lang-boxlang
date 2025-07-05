@@ -924,18 +924,18 @@ Program(
 
 # BoxLang Safe Navigation Operator
 
-obj?.property;
+obj?.field;
 result?.value?.nested;
 
 ==>
 
 Program(
-  ExpressionStatement(SafeFieldAccess(Identifier,SafeNavOp,Identifier),";"),
-  ExpressionStatement(SafeFieldAccess(SafeFieldAccess(Identifier,SafeNavOp,Identifier),SafeNavOp,Identifier),";"))
+  ExpressionStatement(SafeFieldAccess(Identifier,SafeNavOp("?."),Identifier),";"),
+  ExpressionStatement(SafeFieldAccess(SafeFieldAccess(Identifier,SafeNavOp("?."),Identifier),SafeNavOp("?."),Identifier),";"))
 
 # BoxLang Spread Operator
 
-...array;
+...items;
 sum(...numbers);
 [1, 2, ...rest];
 

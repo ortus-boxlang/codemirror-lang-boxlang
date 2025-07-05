@@ -240,7 +240,7 @@ SafeFieldAccess {
 }
 
 anyFieldName {
-  [@dynamicPrecedence=1] { Identifier }
+  Identifier
 }
 
 ArrayAccess {

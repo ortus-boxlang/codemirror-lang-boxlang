@@ -930,8 +930,8 @@ result?.value?.nested;
 ==>
 
 Program(
-  ExpressionStatement(SafeFieldAccess(Identifier,SafeNavOp,Identifier)),
-  ExpressionStatement(SafeFieldAccess(SafeFieldAccess(Identifier,SafeNavOp,Identifier),SafeNavOp,Identifier)))
+  ExpressionStatement(SafeFieldAccess(Identifier,SafeNavOp,Identifier),";"),
+  ExpressionStatement(SafeFieldAccess(SafeFieldAccess(Identifier,SafeNavOp,Identifier),SafeNavOp,Identifier),";"))
 
 # BoxLang Spread Operator
 
@@ -942,9 +942,9 @@ sum(...numbers);
 ==>
 
 Program(
-  ExpressionStatement(SpreadExpression(SpreadOp,Identifier)),
-  ExpressionStatement(MethodInvocation(MethodName(Identifier),ArgumentList(SpreadExpression(SpreadOp,Identifier)))),
-  ExpressionStatement(ArrayLiteral(IntegerLiteral,IntegerLiteral,SpreadExpression(SpreadOp,Identifier))))
+  ExpressionStatement(SpreadExpression(SpreadOp,Identifier),";"),
+  ExpressionStatement(MethodInvocation(MethodName(Identifier),ArgumentList("(",SpreadExpression(SpreadOp,Identifier),")")),";"),
+  ExpressionStatement(ArrayLiteral("[",IntegerLiteral,",",IntegerLiteral,",",SpreadExpression(SpreadOp,Identifier),"]"),";"))
 
 # BoxLang DOES NOT CONTAIN Operator
 

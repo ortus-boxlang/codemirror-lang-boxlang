@@ -577,8 +577,8 @@ PropertyAttribute {
 }
 
 PropertyAttributeName {
-  [@dynamicPrecedence=1] { Identifier } |
-  kw<"type"> | kw<"default"> | kw<"required"> | kw<"name"> | kw<"setter"> | kw<"getter">
+  [@dynamicPrecedence=2] { Identifier } |
+  kw<"type"> | kw<"default"> | kw<"required"> | kw<"setter"> | kw<"getter">
 }
 
 PropertyName {

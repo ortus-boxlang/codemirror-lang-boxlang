@@ -68,7 +68,7 @@ Program(
         property,
         PropertyBody(
           PropertyLongForm(
-            PropertyAttribute(PropertyAttributeName(name), AssignOp, PropertyValue(StringLiteral)),
+            PropertyAttribute(PropertyAttributeName(Identifier), AssignOp, PropertyValue(StringLiteral)),
             PropertyAttribute(PropertyAttributeName(type), AssignOp, PropertyValue(StringLiteral)),
             PropertyAttribute(PropertyAttributeName(default), AssignOp, PropertyValue(StringLiteral))
           )
@@ -153,7 +153,7 @@ Program(
         property,
         PropertyBody(
           PropertyLongForm(
-            PropertyAttribute(PropertyAttributeName(name), AssignOp, PropertyValue(StringLiteral)),
+            PropertyAttribute(PropertyAttributeName(Identifier), AssignOp, PropertyValue(StringLiteral)),
             PropertyAttribute(PropertyAttributeName(default), AssignOp, PropertyValue(StringLiteral))
           )
         ),

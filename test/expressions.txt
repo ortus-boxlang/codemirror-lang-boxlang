@@ -556,7 +556,7 @@ Program(
 # type arguments
 
 class Box <T> {
-  private T theObject;
+  property T theObject;
   public Box( T arg) { theObject = arg; }
   // more code
 }
@@ -570,10 +570,16 @@ Program(
         TypeParameter(
           Definition)),
     ClassBody(
-      FieldDeclaration(
-        Modifiers(private),
-          TypeName,
-          VariableDeclarator(Definition)),
+      PropertyDeclaration(
+        property,
+        PropertyBody(
+          PropertyShortForm(
+            TypeName,
+            PropertyName(Identifier)
+          )
+        ),
+        ";"
+      ),
       ConstructorDeclaration(
         Modifiers(public),
         Definition,
@@ -590,7 +596,7 @@ Program(
 # wildcard
 
 class WildcardDemo {
-  List<? extends B> a;
+  property List<? extends B> a;
 }
 
 ==>
@@ -599,12 +605,19 @@ Program(
   ClassDeclaration(class,
     Definition,
       ClassBody(
-        FieldDeclaration(
-          GenericType(
-            TypeName,
-            TypeArguments(
-              Wildcard(extends, TypeName))),
-          VariableDeclarator(Definition)))))
+        PropertyDeclaration(
+          property,
+          PropertyBody(
+            PropertyShortForm(
+              GenericType(
+                TypeName,
+                TypeArguments(
+                  Wildcard(extends, TypeName))),
+              PropertyName(Identifier)
+            )
+          ),
+          ";"
+        ))))
 
 
 # type arguments with generic types

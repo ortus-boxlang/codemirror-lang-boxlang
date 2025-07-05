@@ -941,3 +941,37 @@ text does not contain "pattern";
 
 Program(
   ExpressionStatement(BinaryExpression(Identifier,BoxLangDoesNotContainOp(does,not,contain),StringLiteral)))
+
+# BoxLang Bitwise Operators
+
+a b| b;
+a b& b;
+a b^ b;
+b~ a;
+a b<< 2;
+a b>> 2;
+a b>>> 2;
+
+==>
+
+Program(
+  ExpressionStatement(BinaryExpression(Identifier,BitwiseOp,Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BitwiseOp,Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BitwiseOp,Identifier)),
+  ExpressionStatement(UnaryExpression(BitwiseComplementOp,Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,BitwiseOp,IntegerLiteral)),
+  ExpressionStatement(BinaryExpression(Identifier,BitwiseOp,IntegerLiteral)),
+  ExpressionStatement(BinaryExpression(Identifier,BitwiseOp,IntegerLiteral)))
+
+# BoxLang Strict Equality and CastAs Operators
+
+a === b;
+a !== b;
+obj castAs String;
+
+==>
+
+Program(
+  ExpressionStatement(BinaryExpression(Identifier,CompareOp,Identifier)),
+  ExpressionStatement(BinaryExpression(Identifier,CompareOp,Identifier)),
+  ExpressionStatement(CastAsExpression(Identifier,castAs,TypeName)))

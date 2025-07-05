@@ -1,14 +1,17 @@
 @precedence {
   cast
+  castAs @left
   update @left
   unaryPlus @left
   negate @left
+  spread @left
   power @right
   times @left
   intdiv @left
   mod @left
   plus @left
   concat @left
+  bitwise @left
   compare @left
   not @left
   and @left
@@ -54,6 +57,7 @@ expression[@isGroup=Expression] {
   AssignmentExpression |
   BinaryExpression |
   InstanceofExpression |
+  CastAsExpression |
   LambdaExpression |
   TernaryExpression |
   ElvisExpression |
@@ -74,7 +78,7 @@ AssignmentExpression {
 }
 
 BinaryExpression {
-  expression !compare (op<Compare, "==" | ">=" | "<=" | "!="> | CompareOp { "<" | ">" } | BoxLangCompareOp | BoxLangContainsOp | BoxLangDoesNotContainOp) expression |
+  expression !compare (op<Compare, "==" | ">=" | "<=" | "!=" | "===" | "!=="> | CompareOp { "<" | ">" } | BoxLangCompareOp | BoxLangContainsOp | BoxLangDoesNotContainOp) expression |
   expression !and (op<Logic, "&&"> | BoxLangLogicOp { kw<"AND"> | kw<"and"> }) expression |
   expression !or (op<Logic, "||"> | BoxLangLogicOp { kw<"OR"> | kw<"or"> }) expression |
   expression !xor BoxLangXorOp expression |
@@ -85,7 +89,8 @@ BinaryExpression {
   expression !intdiv IntDivOp { "\\" } expression |
   expression !mod ModOp expression |
   expression !plus op<Arith, "+" | "-"> expression |
-  expression !concat StringConcatOp { "&" } expression
+  expression !concat StringConcatOp { "&" } expression |
+  expression !bitwise BitwiseOp expression
 }
 
 BoxLangCompareOp {
@@ -127,8 +132,16 @@ ModOp {
   kw<"MOD"> | kw<"mod"> | kw<"Mod">
 }
 
+BitwiseOp {
+  "b|" | "b&" | "b^" | "b<<" | "b>>" | "b>>>"
+}
+
 InstanceofExpression {
   expression !instanceof kw<"instanceof"> type
+}
+
+CastAsExpression {
+  expression !castAs kw<"castAs"> type
 }
 
 LambdaExpression {
@@ -148,12 +161,13 @@ ElvisExpression {
 }
 
 SpreadExpression {
-  SpreadOp { "..." } expression
+  SpreadOp { "..." } !spread expression
 }
 
 UnaryExpression {
   op<Arith, "+" | "-"> !unaryPlus expression |
-  (op<Logic, "!"> | BoxLangNotOp) !negate expression
+  (op<Logic, "!"> | BoxLangNotOp) !negate expression |
+  BitwiseComplementOp { "b~" } !negate expression
 }
 
 UpdateExpression {
@@ -804,8 +818,18 @@ commaSepTrailing<expr> { (expr ("," expr?)*)? }
 
   @precedence { LineComment, times }
   @precedence { BlockComment, times }
+  @precedence { "b|", identifier }
+  @precedence { "b&", identifier }
+  @precedence { "b^", identifier }
+  @precedence { "b~", identifier }
+  @precedence { "b<<", identifier }
+  @precedence { "b>>", identifier }
+  @precedence { "b>>>", identifier }
 
   "="[@name=AssignOp]
+
+  "===" "!=="
+  "b|" "b&" "b^" "b~" "b<<" "b>>" "b>>>"
 
   "{" "}" "(" ")" "[" "]" "." "," ";" ":" "\\"
 }

@@ -31,6 +31,7 @@
   typeArgs
   struct @left
   propertyLong
+  component
 }
 
 @top Program {
@@ -306,7 +307,8 @@ statement[@isGroup=Statement] {
   TryWithResourcesStatement |
   IncludeStatement |
   ParamStatement |
-  FunctionDeclaration
+  FunctionDeclaration |
+  ComponentStatement
 }
 
 Block {
@@ -408,6 +410,31 @@ ParamStatement {
 
 FunctionDeclaration {
   Modifiers? kw<"function"> Definition? Arguments (kw<"throws"> commaSep1<type>)? (Block | ";")
+}
+
+ComponentStatement {
+  ComponentPrefix ComponentName ComponentAttributes ";" |
+  ComponentPrefix ComponentName ";"
+}
+
+ComponentPrefix {
+  kw<"bx"> ":"
+}
+
+ComponentName {
+  Identifier
+}
+
+ComponentAttributes {
+  ComponentAttribute+
+}
+
+ComponentAttribute {
+  ComponentAttributeName "=" expression
+}
+
+ComponentAttributeName {
+  [@dynamicPrecedence=1] { identifier ~identifier }
 }
 
 ParamAttributes {

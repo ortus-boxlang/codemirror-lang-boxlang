@@ -1,0 +1,39 @@
+# Simple component without attributes
+
+bx:output;
+
+==>
+
+Program(ComponentStatement(ComponentPrefix(bx,":"),ComponentName(Identifier),";"))
+
+# Component with single attribute
+
+bx:output myquery=userQuery;
+
+==>
+
+Program(ComponentStatement(ComponentPrefix(bx,":"),ComponentName(Identifier),ComponentAttributes(ComponentAttribute(ComponentAttributeName,AssignOp,Identifier)),";"))
+
+# Component with multiple attributes
+
+bx:output myquery=userQuery encodefor="html";
+
+==>
+
+Program(ComponentStatement(ComponentPrefix(bx,":"),ComponentName(Identifier),ComponentAttributes(ComponentAttribute(ComponentAttributeName,AssignOp,Identifier),ComponentAttribute(ComponentAttributeName,AssignOp,StringLiteral)),";"))
+
+# Component with string attribute value
+
+bx:set variable="foo" value="bar";
+
+==>
+
+Program(ComponentStatement(ComponentPrefix(bx,":"),ComponentName(Identifier),ComponentAttributes(ComponentAttribute(ComponentAttributeName,AssignOp,StringLiteral),ComponentAttribute(ComponentAttributeName,AssignOp,StringLiteral)),";"))
+
+# Component with complex expression in attribute
+
+bx:set variable="total" value=calculateSum(a, b);
+
+==>
+
+Program(ComponentStatement(ComponentPrefix(bx,":"),ComponentName(Identifier),ComponentAttributes(ComponentAttribute(ComponentAttributeName,AssignOp,StringLiteral),ComponentAttribute(ComponentAttributeName,AssignOp,MethodInvocation(MethodName(Identifier),ArgumentList("(",Identifier,",",Identifier,")")))),";"))

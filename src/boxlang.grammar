@@ -1,4 +1,8 @@
 @precedence {
+  // Template islands (basic support)
+  templateIsland
+  templateDelimiter
+
   // Casting
   cast
   castAs @left
@@ -322,7 +326,8 @@ statement[@isGroup=Statement] {
   TryStatement |
   IncludeStatement |
   ParamStatement |
-  ComponentStatement
+  ComponentStatement |
+  TemplateIsland
 }
 
 Block {
@@ -900,8 +905,18 @@ commaSep1Trailing<expr> { expr ("," expr?)* }
   "b|" "b&" "b^" "b~" "b<<" "b>>" "b>>>"
 
   "{" "}" "(" ")" "[" "]" "." "," ";" ":" "\\"
+
+  TemplateDelimiter {
+    "```"
+  }
+
+  @precedence { TemplateDelimiter }
+  @precedence { "bx", identifier }
+}
+
+// Template Islands - Template code enclosed in backticks
+TemplateIsland {
+  !templateIsland TemplateDelimiter TemplateDelimiter
 }
 
 @external propSource BoxLangHighlighting from "./highlight"
-
-@detectDelim

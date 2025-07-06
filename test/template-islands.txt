@@ -1,0 +1,41 @@
+# Simple template island
+
+function test() {
+    ```
+    ```
+}
+
+==>
+
+Program(FunctionDeclaration(function, Definition, Arguments, Block(TemplateIsland(TemplateDelimiter, TemplateDelimiter))))
+
+# Template island in class method
+
+class TestClass {
+    function render() {
+        var name = "World";
+        ```
+        ```
+        return "done";
+    }
+}
+
+==>
+
+Program(ClassDeclaration(class, Definition, ClassBody(FunctionDeclaration(function, Definition, Arguments, Block(LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, StringLiteral)), TemplateIsland(TemplateDelimiter, TemplateDelimiter), ReturnStatement(return, StringLiteral))))))
+
+# Multiple template islands
+
+function multipleIslands() {
+    ```
+    ```
+    
+    var x = 1;
+    
+    ```
+    ```
+}
+
+==>
+
+Program(FunctionDeclaration(function, Definition, Arguments, Block(TemplateIsland(TemplateDelimiter, TemplateDelimiter), LocalVariableDeclaration(var, VariableDeclarator(Definition, AssignOp, IntegerLiteral)), TemplateIsland(TemplateDelimiter, TemplateDelimiter))))

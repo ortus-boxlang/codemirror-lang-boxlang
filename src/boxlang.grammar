@@ -604,8 +604,15 @@ PropertyAttribute {
 }
 
 PropertyAttributeName {
-  [@dynamicPrecedence=2] { Identifier } |
-  kw<"type"> | kw<"default"> | kw<"required"> | kw<"setter"> | kw<"getter">
+  kw<"default"> |
+  kw<"displayname"> |
+  kw<"getter"> |
+  kw<"hint"> |
+  kw<"required"> |
+  kw<"setter"> |
+  kw<"serializable"> |
+  kw<"type"> |
+  Identifier
 }
 
 PropertyName {

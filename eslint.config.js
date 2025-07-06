@@ -178,20 +178,7 @@ export default [
 				"always"
 			],
 			"no-empty-function" : "warn",
-			"no-magic-numbers"  : [
-				"warn",
-				{
-					"ignore" : [
-						-1,
-						0,
-						1,
-						2
-					],
-					"ignoreArrayIndexes" : true,
-					"enforceConst"       : true
-				}
-			],
-			"radix" : "error"
+			"radix"             : "error"
 		}
 	},
 	{
@@ -357,20 +344,7 @@ export default [
 				"always"
 			],
 			"no-empty-function" : "warn",
-			"no-magic-numbers"  : [
-				"warn",
-				{
-					"ignore" : [
-						-1,
-						0,
-						1,
-						2
-					],
-					"ignoreArrayIndexes" : true,
-					"enforceConst"       : true
-				}
-			],
-			"radix" : "error"
+			"radix"             : "error"
 		}
 	},
 	{

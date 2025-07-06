@@ -1,0 +1,261 @@
+@precedence {
+  scriptTag,
+  tag,
+  hash,
+  content,
+  unary,
+  mult @left,
+  add @left,
+  compare @left,
+  logical @left,
+  else
+}
+
+@top Template {
+  content*
+}
+
+content {
+  TextContent |
+  HashExpression |
+  BxTag |
+  BxScriptTag |
+  TemplateComment
+}
+
+TextContent {
+  textContent
+}
+
+HashExpression {
+  "#" expression "#"
+}
+
+TemplateComment {
+  "<!---" commentContent* "--->"
+}
+
+commentContent {
+  commentChar
+}
+
+// BX Tags
+BxTag {
+  !tag (BxOpenTag content* BxCloseTag | BxSelfClosingTag)
+}
+
+BxOpenTag {
+  "<" "bx" ":" tagName attribute* ">"
+}
+
+BxCloseTag {
+  "<" "/" "bx" ":" tagName ">"
+}
+
+BxSelfClosingTag {
+  "<" "bx" ":" tagName attribute* "/" ">"
+}
+
+// Special BX Script Tag
+BxScriptTag {
+  !scriptTag "<" "bx" ":" "script" attribute* ">" scriptStatement* "<" "/" "bx" ":" "script" ">"
+}
+
+tagName {
+  identifier
+}
+
+attribute {
+  attributeName "=" attributeValue
+}
+
+attributeName {
+  identifier
+}
+
+attributeValue {
+  StringLiteral |
+  !hash HashExpression
+}
+
+// Simplified script statements for templates
+scriptStatement {
+  Block |
+  ExpressionStatement |
+  IfStatement |
+  WhileStatement |
+  BreakStatement |
+  ContinueStatement |
+  ReturnStatement |
+  ThrowStatement |
+  LocalVariableDeclaration
+}
+
+Block {
+  "{" scriptStatement* "}"
+}
+
+ExpressionStatement {
+  expression ";"
+}
+
+IfStatement {
+  kw<"if"> "(" expression ")" scriptStatement (!else kw<"else"> scriptStatement)?
+}
+
+WhileStatement {
+  kw<"while"> "(" expression ")" scriptStatement
+}
+
+BreakStatement {
+  kw<"break"> ";"
+}
+
+ContinueStatement {
+  kw<"continue"> ";"
+}
+
+ReturnStatement {
+  kw<"return"> expression? ";"
+}
+
+ThrowStatement {
+  kw<"throw"> expression ";"
+}
+
+LocalVariableDeclaration {
+  (kw<"var"> | type) identifier ("=" expression)? ";"
+}
+
+// Simplified expressions with fixed precedence
+expression {
+  LogicalOrExpression
+}
+
+LogicalOrExpression {
+  LogicalOrExpression !logical "||" LogicalAndExpression |
+  LogicalAndExpression
+}
+
+LogicalAndExpression {
+  LogicalAndExpression !logical "&&" EqualityExpression |
+  EqualityExpression
+}
+
+EqualityExpression {
+  EqualityExpression !compare ("==" | "!=") RelationalExpression |
+  RelationalExpression
+}
+
+RelationalExpression {
+  RelationalExpression !compare ("<" | ">" | "<=" | ">=") AdditiveExpression |
+  AdditiveExpression
+}
+
+AdditiveExpression {
+  AdditiveExpression !add ("+" | "-" | "&") MultiplicativeExpression |
+  MultiplicativeExpression
+}
+
+MultiplicativeExpression {
+  MultiplicativeExpression !mult ("*" | "/" | "%") UnaryExpression |
+  UnaryExpression
+}
+
+UnaryExpression {
+  !unary ("!" | "-") UnaryExpression |
+  PostfixExpression
+}
+
+PostfixExpression {
+  PostfixExpression !unary ("++" | "--") |
+  PrimaryExpression
+}
+
+PrimaryExpression {
+  literal |
+  identifier |
+  "(" expression ")" |
+  FunctionCall |
+  FieldAccess |
+  ArrayAccess
+}
+
+FunctionCall {
+  identifier "(" argumentList? ")"
+}
+
+FieldAccess {
+  PrimaryExpression "." identifier
+}
+
+ArrayAccess {
+  PrimaryExpression "[" expression "]"
+}
+
+argumentList {
+  expression ("," expression)*
+}
+
+literal {
+  IntegerLiteral |
+  FloatingPointLiteral |
+  StringLiteral |
+  BooleanLiteral |
+  kw<"null">
+}
+
+BooleanLiteral {
+  kw<"true"> | kw<"false">
+}
+
+type {
+  identifier
+}
+
+kw<term> { @specialize[@name={term}]<identifier, term> }
+
+@skip { whitespace }
+
+@tokens {
+  whitespace {
+    @whitespace+
+  }
+
+  IntegerLiteral {
+    @digit+
+  }
+
+  FloatingPointLiteral {
+    @digit+ "." @digit+
+  }
+
+  StringLiteral {
+    '"' (!["\\\n] | "\\" _)* '"' |
+    "'" (!['\\\n] | "\\" _)* "'"
+  }
+
+  identifier {
+    @asciiLetter (@asciiLetter | @digit | "_")*
+  }
+
+  textContent {
+    ![#<\s]+
+  }
+
+  commentChar {
+    ![\-\s] | "-" ![->] | "--" ![\>\s]
+  }
+
+  @precedence { FloatingPointLiteral, IntegerLiteral }
+  @precedence { whitespace, textContent }
+  @precedence { whitespace, commentChar }
+  @precedence { "script", identifier }
+
+  "#" "<!---" "--->" "{" "}" "(" ")" "[" "]" "."
+  "=" "==" "!=" "<" ">" "<=" ">=" "&&" "||"
+  "+" "-" "*" "/" "%" "&" "++" "--" "!"
+  "," ";" "bx" ":" "/"
+}
+
+@external propSource BoxLangTemplateHighlighting from "./highlight-template"

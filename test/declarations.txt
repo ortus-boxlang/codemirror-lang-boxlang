@@ -64,6 +64,7 @@ Program(
         Dimension(IntegerLiteral),
         Dimension))))
 
+
 # single type import declaration
 
 import java.util.Vector;
@@ -221,36 +222,36 @@ Program(
   AnnotationTypeDeclaration(Identifier, AnnotationTypeBody))
 
 
-# method declaration
+# function declaration
 
-class Beyonce {
-  void calculateAnswer(double wingSpan, int numberOfEngines,
-                       double length, double grossTons) {
-      //do the calculation here
-  }
+function calculateAnswer(wingSpan, numberOfEngines, length, grossTons) {
+    //do the calculation here
 }
 
 ==>
 
 Program(
-  ClassDeclaration(class,
+  FunctionDeclaration(
+    function,
     Definition,
-    ClassBody(
-      MethodDeclaration(
-        void,
-        Definition,
-        Arguments(
-          "(",
-          Parameter(PrimitiveType, Definition),
-          ",",
-          Parameter(PrimitiveType, Definition),
-          ",",
-          Parameter(PrimitiveType, Definition),
-          ",",
-          Parameter(PrimitiveType, Definition),
-          ")"),
-        Block("{", LineComment, "}")))))
-
+    Arguments(
+      "(",
+      Parameter(Definition),
+      ",",
+      Parameter(Definition),
+      ",",
+      Parameter(Definition),
+      ",",
+      Parameter(Definition),
+      ")"
+    ),
+    Block(
+      "{",
+      LineComment,
+      "}"
+    )
+  )
+)
 
 # constructor declaration
 
@@ -632,6 +633,97 @@ Program(
         SwitchLabel(default),
         ReturnStatement(return, IntegerLiteral)
       ))
+    )
+  )
+)
+
+
+# function with return type
+
+boolean function isValid() {
+    return true;
+}
+
+==>
+
+Program(
+  FunctionDeclaration(
+    ReturnType(PrimitiveType),
+    function,
+    Definition,
+    Arguments("(", ")"),
+    Block(
+      ReturnStatement(return, BooleanLiteral)
+    )
+  )
+)
+
+
+# public function with return type
+
+public boolean function validate(data) {
+    return data != null;
+}
+
+==>
+
+Program(
+  FunctionDeclaration(
+    Modifiers(public),
+    ReturnType(PrimitiveType),
+    function,
+    Definition,
+    Arguments(
+      "(",
+      Parameter(Definition),
+      ")"
+    ),
+    Block(
+      "{",
+      ReturnStatement(return, BinaryExpression(Identifier, CompareOp, null), ";"),
+      "}"
+    )
+  )
+)
+
+
+# package function (using supported modifier)
+
+package function getData() {
+    // helper logic
+}
+
+==>
+
+Program(
+  FunctionDeclaration(
+    Modifiers(package),
+    function,
+    Definition,
+    Arguments("(", ")"),
+    Block(
+      LineComment
+    )
+  )
+)
+
+
+# private static function
+
+private static function helper() {
+    // helper logic
+}
+
+==>
+
+Program(
+  FunctionDeclaration(
+    Modifiers(private, static),
+    function,
+    Definition,
+    Arguments("(", ")"),
+    Block(
+      LineComment
     )
   )
 )

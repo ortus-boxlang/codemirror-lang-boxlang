@@ -320,7 +320,6 @@ statement[@isGroup=Statement] {
   TryWithResourcesStatement |
   IncludeStatement |
   ParamStatement |
-  FunctionDeclaration |
   ComponentStatement
 }
 
@@ -422,7 +421,11 @@ ParamStatement {
 }
 
 FunctionDeclaration {
-  Modifiers? kw<"function"> Definition? Arguments (kw<"throws"> commaSep1<type>)? (Block | ";")
+  Modifiers? ReturnType? kw<"function"> Definition Arguments (Block | ";")
+}
+
+ReturnType {
+  unannotatedType
 }
 
 ComponentStatement {
@@ -521,7 +524,8 @@ declaration {
   ImportDeclaration |
   ClassDeclaration |
   InterfaceDeclaration |
-  AnnotationTypeDeclaration
+  AnnotationTypeDeclaration |
+  FunctionDeclaration
 }
 
 ImportDeclaration {
@@ -547,7 +551,7 @@ Modifiers {
 
 modifier {
   kw<"public"> | kw<"protected"> | kw<"private"> | kw<"abstract"> | kw<"static"> | kw<"final"> | kw<"strictfp"> |
-  kw<"default"> kw<"synchronized"> | kw<"native"> | kw<"transient"> | kw<"volatile">
+  kw<"default"> | kw<"synchronized"> | kw<"native"> | kw<"transient"> | kw<"volatile"> | kw<"package"> | kw<"remote">
 }
 
 TypeParameters {
@@ -581,6 +585,7 @@ ClassBody {
 classBodyDeclaration {
   PropertyDeclaration |
   MethodDeclaration |
+  FunctionDeclaration |
   ClassDeclaration |
   InterfaceDeclaration |
   AnnotationTypeDeclaration |

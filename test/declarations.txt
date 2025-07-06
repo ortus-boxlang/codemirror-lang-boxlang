@@ -708,6 +708,27 @@ Program(
 )
 
 
+# remote function (using supported modifier)
+
+remote function getApiData() {
+    // remote logic
+}
+
+==>
+
+Program(
+  FunctionDeclaration(
+    Modifiers(remote),
+    function,
+    Definition,
+    Arguments("(", ")"),
+    Block(
+      LineComment
+    )
+  )
+)
+
+
 # private static function
 
 private static function helper() {

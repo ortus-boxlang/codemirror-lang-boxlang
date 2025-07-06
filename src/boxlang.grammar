@@ -45,6 +45,9 @@
   struct @left
   propertyLong
   component
+
+  // Automatic semicolon insertion
+  noSemicolon
 }
 
 @top Program {

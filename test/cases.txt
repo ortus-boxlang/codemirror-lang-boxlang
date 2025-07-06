@@ -36,7 +36,7 @@ print( "DONE" );
 
 Program(IfStatement(if, ParenthesizedExpression(BooleanLiteral), Block(ExpressionStatement(MethodInvocation(MethodName(Identifier), ArgumentList(StringLiteral))))), ExpressionStatement(MethodInvocation(MethodName(Identifier), ArgumentList(StringLiteral))))
 
-# BoxLang Types
+# BoxLang Var Declarations
 
 var myVar = "test";
 var userName = "BoxLang";

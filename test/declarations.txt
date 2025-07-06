@@ -64,15 +64,6 @@ Program(
         Dimension(IntegerLiteral),
         Dimension))))
 
-
-# package_declaration
-
-package myVector;
-
-==>
-
-Program(PackageDeclaration(package,Identifier))
-
 # single type import declaration
 
 import java.util.Vector;

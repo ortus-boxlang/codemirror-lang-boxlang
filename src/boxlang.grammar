@@ -518,15 +518,10 @@ ElementValueArrayInitializer {
 }
 
 declaration {
-  PackageDeclaration |
   ImportDeclaration |
   ClassDeclaration |
   InterfaceDeclaration |
   AnnotationTypeDeclaration
-}
-
-PackageDeclaration {
-  annotation* kw<"package"> name ";"
 }
 
 ImportDeclaration {

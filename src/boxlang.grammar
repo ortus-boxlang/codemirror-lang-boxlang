@@ -1,16 +1,23 @@
 @precedence {
+  // Casting
   cast
   castAs @left
+
+  // Unary
   update @left
   unaryPlus @left
   negate @left
   spread @left
+
+  // Math
   power @right
   times @left
   intdiv @left
   mod @left
   plus @left
   concat @left
+
+  // Bitwise / logic
   bitwise @left
   compare @left
   not @left
@@ -19,11 +26,17 @@
   xor @left
   eqv @left
   imp @left
+
+  // Conditional
   elvis @right
   instanceof
   ternary @right
+
+  // Assignment / pairing
   valuePair
   assign @right
+
+  // Object ops
   array @right
   new @right
   else @right

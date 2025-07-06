@@ -188,7 +188,7 @@ HashExpression {
 }
 
 StructLiteral {
-  "{" commaSep1<StructEntry> "}"
+  "{" commaSep1Trailing<StructEntry> "}"
 }
 
 StructEntry {
@@ -803,6 +803,8 @@ commaSep<expr> { (expr ("," expr)*)? }
 commaSep1<expr> { expr ("," expr)* }
 
 commaSepTrailing<expr> { (expr ("," expr?)*)? }
+
+commaSep1Trailing<expr> { expr ("," expr?)* }
 
 @skip { LineComment | BlockComment | whitespace }
 

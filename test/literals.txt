@@ -185,74 +185,41 @@ Program(
 Program(
   ExpressionStatement(CharacterLiteral))
 
+# array literals with trailing commas
 
-# ascii escapes
-
-'\NUL';
-'\SOH';
-'\STX';
-'\ETX';
-'\EOT';
-'\ENQ';
-'\ACK';
-'\BEL';
-'\BS';
-'\TAB';
-'\LF';
-'\VT';
-'\FF';
-'\CR';
-'\SO';
-'\SI';
-'\DLE';
-'\DC1';
-'\DC2';
-'\DC3';
-'\DC4';
-'\NAK';
-'\SYN';
-'\ETB';
-'\CAN';
-'\EM';
-'\SUB';
-'\ESC';
-'\FS';
-'\GS';
-'\RS';
-'\US';
+[1, 2, 3,];
+[1,];
+["hello", "world",];
 
 ==>
 
 Program(
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral),
-  ExpressionStatement(CharacterLiteral))
+  ExpressionStatement(ArrayLiteral(IntegerLiteral, IntegerLiteral, IntegerLiteral)),
+  ExpressionStatement(ArrayLiteral(IntegerLiteral)),
+  ExpressionStatement(ArrayLiteral(StringLiteral, StringLiteral)))
+
+
+# struct literals with trailing commas
+
+{ test: "now", };
+{ a: 1, b: 2, };
+{ "key": "value", };
+
+==>
+
+Program(
+  ExpressionStatement(StructLiteral(StructEntry(Identifier, StringLiteral))),
+  ExpressionStatement(StructLiteral(StructEntry(Identifier, IntegerLiteral), StructEntry(Identifier, IntegerLiteral))),
+  ExpressionStatement(StructLiteral(StructEntry(StringLiteral, StringLiteral))))
+
+
+# nested literals with trailing commas
+
+{ items: [1, 2, 3,], name: "test", };
+[{ a: 1, }, { b: 2, },];
+
+==>
+
+Program(
+  ExpressionStatement(StructLiteral(StructEntry(Identifier, ArrayLiteral(IntegerLiteral, IntegerLiteral, IntegerLiteral)), StructEntry(Identifier, StringLiteral))),
+  ExpressionStatement(ArrayLiteral(StructLiteral(StructEntry(Identifier, IntegerLiteral)), StructLiteral(StructEntry(Identifier, IntegerLiteral)))))

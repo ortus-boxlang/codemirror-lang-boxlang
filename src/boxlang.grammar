@@ -320,7 +320,6 @@ statement[@isGroup=Statement] {
   LocalVariableDeclaration |
   ThrowStatement |
   TryStatement |
-  TryWithResourcesStatement |
   IncludeStatement |
   ParamStatement |
   ComponentStatement
@@ -394,20 +393,6 @@ CatchType {
 
 FinallyClause {
   kw<"finally"> Block
-}
-
-TryWithResourcesStatement {
-  kw<"try"> ResourceSpecification Block CatchClause* FinallyClause?
-}
-
-ResourceSpecification {
-  "(" Resource (";" Resource)* ";"? ")"
-}
-
-Resource {
-  Modifiers? unannotatedType variableDeclaratorId "=" expression |
-  Identifier |
-  FieldAccess
 }
 
 IncludeStatement {

@@ -318,36 +318,6 @@ Program(
               ExpressionStatement(UpdateExpression(Identifier, UpdateOp)))))))))
 
 
-# try-with-resources statements
-
-try (FileInputStream input = new FileInputStream("file.txt")) {
-  int data = input.read();
-}
-
-==>
-
-Program(
-  TryWithResourcesStatement(try,
-    ResourceSpecification(
-      Resource(
-        TypeName,
-        Definition,
-        AssignOp,
-        ObjectCreationExpression(new,
-          TypeName,
-          ArgumentList(StringLiteral)))),
-    Block(
-      LocalVariableDeclaration(
-        PrimitiveType,
-        VariableDeclarator(
-          Definition,
-          AssignOp,
-          MethodInvocation(
-            Identifier,
-            MethodName(Identifier),
-            ArgumentList))))))
-
-
 # return statement
 
 return x;

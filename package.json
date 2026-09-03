@@ -38,7 +38,9 @@
     "typescript": "^5.8.3"
   },
   "overrides": {
-    "browserslist-generator": "^3.0.0"
+    "browserslist-generator": "^3.0.0",
+    "diff": "^8.0.4",
+    "serialize-javascript": "^7.1.1"
   },
   "keywords": [
     "boxlang",

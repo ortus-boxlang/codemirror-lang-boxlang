@@ -20,6 +20,7 @@
   mod @left
   plus @left
   concat @left
+  range @left
 
   // Bitwise / logic
   bitwise @left
@@ -71,7 +72,31 @@ literal {
   TextBlock |
   kw<"null"> |
   HashExpression |
-  StructLiteral
+  StructLiteral |
+  SetLiteral |
+  StringBuilderLiteral
+}
+
+// set{1, 2, 3}
+SetLiteral {
+  setKw "{" commaSepTrailing<expression> "}"
+}
+
+// A "set" identifier is only ever treated as this soft keyword when the
+// grammar actually needs a SetLiteral (i.e. immediately followed by "{");
+// @extend (not @specialize) keeps "set" usable as a plain identifier
+// everywhere else (variables, functions, bx:set component name, etc).
+setKw { @extend[@name=SetLiteralKeyword]<identifier, "set" | "Set" | "SET"> }
+
+// sb{"hello"} or stringbuilder{"hello"}
+StringBuilderLiteral {
+  sbKw "{" expression "}"
+}
+
+// same soft-keyword treatment as setKw above
+sbKw {
+  @extend[@name=StringBuilderKeyword]<identifier,
+    "sb" | "Sb" | "SB" | "stringbuilder" | "StringBuilder" | "STRINGBUILDER">
 }
 
 @skip {} {
@@ -81,6 +106,7 @@ literal {
 expression[@isGroup=Expression] {
   AssignmentExpression |
   BinaryExpression |
+  RangeExpression |
   InstanceofExpression |
   CastAsExpression |
   LambdaExpression |
@@ -98,9 +124,19 @@ CastExpression {
   "(" type ("&" type)* ")" !cast expression
 }
 
+// { a } = obj / { a, b: renamed, ...rest } = obj / [ a, b, ...rest ] = arr
+// reuse StructLiteral/ArrayLiteral for destructuring targets: both already
+// support identifiers, key/value pairs, defaults (as nested AssignmentExpression
+// array elements) and spread
 AssignmentExpression {
-  (Identifier | FieldAccess | SafeFieldAccess | ArrayAccess)
+  (Identifier | FieldAccess | SafeFieldAccess | ArrayAccess | StructLiteral | ArrayLiteral)
   !assign (AssignOp | "=") expression
+}
+
+// 1..5, 1.., ..5, .., 1>..5, 1..<5, 1>..<5
+RangeExpression {
+  expression !range RangeOp expression? |
+  RangeOp !range expression?
 }
 
 BinaryExpression {
@@ -195,11 +231,16 @@ HashExpression {
 }
 
 StructLiteral {
-  "{" commaSep1Trailing<StructEntry> "}"
+  "{" commaSep1Trailing<StructEntry | StructShorthandEntry | SpreadExpression> "}"
 }
 
 StructEntry {
   (Identifier | StringLiteral | ParenthesizedExpression) ":" expression
+}
+
+// { foo } is shorthand for { foo: foo }; ("= expression") is a destructuring default
+StructShorthandEntry {
+  Identifier ("=" expression)?
 }
 
 UnaryExpression {
@@ -232,7 +273,6 @@ baseExpression {
 ArrayCreationExpression {
   kw<"new"> simpleType
   Dimension { annotation* !array "[" expression? "]" }+
-  ArrayInitializer?
 }
 
 ParenthesizedExpression {
@@ -474,10 +514,11 @@ ForStatement {
   statement
 }
 
+// for (item in arr), for (item, index in arr), for (key, value in struct), for (var item in arr)
 EnhancedForStatement {
   kw<"for">
-  ForSpec {
-    "(" Modifiers? unannotatedType variableDeclaratorId ":" expression ")"
+  ForInSpec {
+    "(" ckw<"var">? expression ("," expression)? kw<"in"> expression ")"
   }
   statement
 }
@@ -503,14 +544,12 @@ ElementValuePair {
   Identifier !valuePair "=" elementValue
 }
 
+// BoxLang annotation values are just expressions (real BoxLang has no Java-style
+// typed array-initializer annotation values; struct/array literal values already
+// flow through StructLiteral/ArrayLiteral as ordinary expressions)
 elementValue {
   (expression |
-   ElementValueArrayInitializer |
    annotation) !valuePair
-}
-
-ElementValueArrayInitializer {
-  "{" commaSepTrailing<elementValue> "}"
 }
 
 declaration {
@@ -696,20 +735,11 @@ ConstantDeclaration {
 }
 
 VariableDeclarator {
-  variableDeclaratorId ("=" variableInitializer)?
+  variableDeclaratorId ("=" expression)?
 }
 
 variableDeclaratorId {
   Definition Dimension*
-}
-
-variableInitializer {
-  expression |
-  ArrayInitializer
-}
-
-ArrayInitializer {
-  "{" commaSepTrailing<variableInitializer> "}"
 }
 
 type[@isGroup=Type] {
@@ -724,7 +754,11 @@ unannotatedType {
 
 simpleType {
   kw<"void"> |
-  @specialize[@name=PrimitiveType]<identifier, "byte" | "short" | "int" | "long" | "char" | "float" | "double" | "boolean" | "any" | "string" | "numeric" | "array" | "struct" | "query" | "date" | "component" | "number"> |
+  // true Java primitives are reserved words, never valid as plain identifiers
+  @specialize[@name=PrimitiveType]<identifier, "byte" | "short" | "int" | "long" | "char" | "float" | "double" | "boolean"> |
+  // BoxLang type names are soft keywords: "struct", "query", etc. remain
+  // perfectly valid variable/parameter names elsewhere
+  @extend[@name=PrimitiveType]<identifier, "any" | "string" | "numeric" | "array" | "struct" | "query" | "date" | "component" | "number"> |
   TypeName |
   ScopedTypeName |
   GenericType
@@ -780,7 +814,9 @@ Throws {
 }
 
 LocalVariableDeclaration {
-  Modifiers? (ckw<"var"> | unannotatedType) commaSep1<VariableDeclarator> ";"
+  Modifiers? (ckw<"var"> | unannotatedType) commaSep1<VariableDeclarator> ";" |
+  // var { a, ...rest } = obj; / var [ a, ...rest ] = arr;
+  Modifiers? ckw<"var"> (StructLiteral | ArrayLiteral) "=" expression ";"
 }
 
 MethodDeclaration {
@@ -834,8 +870,12 @@ commaSep1Trailing<expr> { expr ("," expr?)* }
     $[fFdD]
   }
 
+  // Note: a bare trailing dot ("1.") is intentionally NOT a float (unlike Java) —
+  // real BoxLang's FLOAT_LITERAL always requires digits after the dot, and
+  // allowing a digits-less trailing dot here would swallow the first "." of
+  // the ".." range operator (e.g. "1..5" would lex as "1." + "." + "5").
   FloatingPointLiteral {
-    digits ("." digits? exponent? floatSuffix? | exponent floatSuffix? | floatSuffix) |
+    digits ("." digits exponent? floatSuffix? | exponent floatSuffix? | floatSuffix) |
     "." digits exponent? floatSuffix? |
     ("0x" | "0X") (hexDigits ("." hexDigits?)? | "." hexDigits) hexExponent floatSuffix?
   }
@@ -856,6 +896,14 @@ commaSep1Trailing<expr> { expr ("," expr?)* }
   textBlockQuote { !["\n] textBlockContent | "\n" | '"' textBlockQuote2 }
   textBlockQuote2 { !["\n] textBlockContent | "\n" }
   textBlockEnd { '"""' }
+
+  // ".." | "..<" | ">.." | ">..<"
+  RangeOp {
+    ".." "<"? |
+    ">" ".." "<"?
+  }
+
+  @precedence { RangeOp, "." }
 
   Asterisk { "*" }
 
@@ -911,7 +959,6 @@ commaSep1Trailing<expr> { expr ("," expr?)* }
   }
 
   @precedence { TemplateDelimiter }
-  @precedence { "bx", identifier }
 }
 
 // Template Islands - Template code enclosed in backticks

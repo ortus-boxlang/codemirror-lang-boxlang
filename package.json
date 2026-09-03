@@ -37,6 +37,9 @@
     "rollup-plugin-ts": "^3.0.2",
     "typescript": "^5.8.3"
   },
+  "overrides": {
+    "browserslist-generator": "^3.0.0"
+  },
   "keywords": [
     "boxlang",
     "codemirror",

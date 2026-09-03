@@ -213,6 +213,24 @@ Program(
   ExpressionStatement(StructLiteral(StructEntry(StringLiteral, StringLiteral))))
 
 
+# struct literals with shorthand keys and spread
+
+{ a, b, ...rest };
+{ a: 1, ...defaults, b: 2 };
+
+==>
+
+Program(
+  ExpressionStatement(StructLiteral(
+    StructShorthandEntry(Identifier),
+    StructShorthandEntry(Identifier),
+    SpreadExpression(SpreadOp, Identifier))),
+  ExpressionStatement(StructLiteral(
+    StructEntry(Identifier, IntegerLiteral),
+    SpreadExpression(SpreadOp, Identifier),
+    StructEntry(Identifier, IntegerLiteral))))
+
+
 # nested literals with trailing commas
 
 { items: [1, 2, 3,], name: "test", };

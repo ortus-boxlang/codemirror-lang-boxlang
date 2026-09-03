@@ -2,3 +2,6 @@
 /dist
 /src/*.js
 /src/*.d.ts
+# hand-authored ambient module declaration for *.grammar imports, needed by
+# rollup-plugin-ts's type-checker — not a generated artifact
+!/src/grammar.d.ts

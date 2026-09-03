@@ -12,24 +12,15 @@ export const BoxLangTemplateLanguage = LRLanguage.define( {
 	parser : parser.configure( {
 		props : [
 			indentNodeProp.add( {
-				IfStatement  : continuedIndent( { except: /^\s*({|else\b)/ } ),
-				TryStatement : continuedIndent( { except: /^\s*({|catch|finally)\b/ } ),
-				SwitchBlock  : context => {
-					const after = context.textAfter, closed = /^\s*\}/.test( after ), isCase = /^\s*(case|default)\b/.test( after );
-					return context.baseIndent + ( closed ? 0 : isCase ? 1 : 2 ) * context.unit;
-				},
+				IfStatement     : continuedIndent( { except: /^\s*({|else\b)/ } ),
 				Block           : delimitedIndent( { closing: "}" } ),
 				BxTag           : delimitedIndent( { closing: ">" } ),
 				BxScriptTag     : delimitedIndent( { closing: "</bx:script>" } ),
-				BxOutputTag     : delimitedIndent( { closing: "</bx:output>" } ),
-				BlockComment    : () => null,
-				TemplateComment : () => null,
-				scriptStatement : continuedIndent( { except: /^{/ } )
+				TemplateComment : () => null
 			} ),
 
 			foldNodeProp.add( {
-				["Block SwitchBlock BxTag BxScriptTag BxOutputTag ArrayInitializer ElementValueArrayInitializer"] : foldInside,
-				BlockComment( tree ) { return { from: tree.from + 2, to: tree.to - 2 }; },
+				["Block BxTag BxScriptTag"] : foldInside,
 				TemplateComment( tree ) { return { from: tree.from + 5, to: tree.to - 4 }; }
 			} )
 		]

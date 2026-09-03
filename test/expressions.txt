@@ -247,23 +247,80 @@ Program(
         ArgumentList(Identifier))))))
 
 
-# Enhanced for statements
+# Enhanced for statements (for-in)
 
-for (A b : c) {
+for (b in c) {
   d(b);
 }
 
 ==>
 
 Program(
-  EnhancedForStatement(for, ForSpec(
-    TypeName,
-    Definition,
+  EnhancedForStatement(for, ForInSpec(
+    Identifier,
+    in,
     Identifier),
     Block(
       ExpressionStatement(MethodInvocation(
         MethodName(Identifier),
         ArgumentList(Identifier))))))
+
+# Enhanced for statements with var
+
+for (var item in arr) {
+  d(item);
+}
+
+==>
+
+Program(
+  EnhancedForStatement(for, ForInSpec(
+    var,
+    Identifier,
+    in,
+    Identifier),
+    Block(
+      ExpressionStatement(MethodInvocation(
+        MethodName(Identifier),
+        ArgumentList(Identifier))))))
+
+# Two-variable for-in (item, index)
+
+for (item, index in arr) {
+  d(item, index);
+}
+
+==>
+
+Program(
+  EnhancedForStatement(for, ForInSpec(
+    Identifier,
+    Identifier,
+    in,
+    Identifier),
+    Block(
+      ExpressionStatement(MethodInvocation(
+        MethodName(Identifier),
+        ArgumentList(Identifier, Identifier))))))
+
+# Two-variable for-in (key, value) over a struct
+
+for (key, value in myStruct) {
+  d(key, value);
+}
+
+==>
+
+Program(
+  EnhancedForStatement(for, ForInSpec(
+    Identifier,
+    Identifier,
+    in,
+    Identifier),
+    Block(
+      ExpressionStatement(MethodInvocation(
+        MethodName(Identifier),
+        ArgumentList(Identifier, Identifier))))))
 
 
 # while statement
@@ -958,3 +1015,92 @@ Program(
   ExpressionStatement(BinaryExpression(Identifier,CompareOp,Identifier)),
   ExpressionStatement(BinaryExpression(Identifier,CompareOp,Identifier)),
   ExpressionStatement(CastAsExpression(Identifier,castAs,TypeName)))
+
+# BoxLang Range Operators
+
+a = 1..5;
+a = 1..<5;
+a = 1>..5;
+a = 1>..<5;
+a = ..5;
+a = 1..;
+a = ..;
+
+==>
+
+Program(
+  ExpressionStatement(AssignmentExpression(Identifier, AssignOp, RangeExpression(IntegerLiteral, RangeOp, IntegerLiteral))),
+  ExpressionStatement(AssignmentExpression(Identifier, AssignOp, RangeExpression(IntegerLiteral, RangeOp, IntegerLiteral))),
+  ExpressionStatement(AssignmentExpression(Identifier, AssignOp, RangeExpression(IntegerLiteral, RangeOp, IntegerLiteral))),
+  ExpressionStatement(AssignmentExpression(Identifier, AssignOp, RangeExpression(IntegerLiteral, RangeOp, IntegerLiteral))),
+  ExpressionStatement(AssignmentExpression(Identifier, AssignOp, RangeExpression(RangeOp, IntegerLiteral))),
+  ExpressionStatement(AssignmentExpression(Identifier, AssignOp, RangeExpression(IntegerLiteral, RangeOp))),
+  ExpressionStatement(AssignmentExpression(Identifier, AssignOp, RangeExpression(RangeOp))))
+
+# BoxLang Object and Array Destructuring Assignment
+
+{ x, y: z } = source;
+[ x, y, ...rest ] = source;
+var { x, ...rest } = source;
+var [ x, ...rest ] = source;
+
+==>
+
+Program(
+  ExpressionStatement(AssignmentExpression(
+    StructLiteral(StructShorthandEntry(Identifier), StructEntry(Identifier, ":", Identifier)),
+    AssignOp,
+    Identifier)),
+  ExpressionStatement(AssignmentExpression(
+    ArrayLiteral(Identifier, Identifier, SpreadExpression(SpreadOp, Identifier)),
+    AssignOp,
+    Identifier)),
+  LocalVariableDeclaration(var,
+    StructLiteral(StructShorthandEntry(Identifier), SpreadExpression(SpreadOp, Identifier)),
+    AssignOp,
+    Identifier),
+  LocalVariableDeclaration(var,
+    ArrayLiteral(Identifier, SpreadExpression(SpreadOp, Identifier)),
+    AssignOp,
+    Identifier))
+
+# BoxLang Set and StringBuilder Literals
+
+a = set{1, 2, 3};
+b = set{};
+c = sb{"hi"};
+d = stringbuilder{"hi"};
+
+==>
+
+Program(
+  ExpressionStatement(AssignmentExpression(Identifier, AssignOp, SetLiteral(SetLiteralKeyword, IntegerLiteral, IntegerLiteral, IntegerLiteral))),
+  ExpressionStatement(AssignmentExpression(Identifier, AssignOp, SetLiteral(SetLiteralKeyword))),
+  ExpressionStatement(AssignmentExpression(Identifier, AssignOp, StringBuilderLiteral(StringBuilderKeyword, StringLiteral))),
+  ExpressionStatement(AssignmentExpression(Identifier, AssignOp, StringBuilderLiteral(StringBuilderKeyword, StringLiteral))))
+
+# BoxLang assert with a custom message
+
+assert x > 0 : "must be positive";
+
+==>
+
+Program(AssertStatement(assert, BinaryExpression(Identifier, CompareOp, IntegerLiteral), ":", StringLiteral))
+
+# BoxLang local (in-body) class
+
+function outer() {
+  class Inner {
+    function ping() {}
+  }
+  return new Inner();
+}
+
+==>
+
+Program(
+  FunctionDeclaration(function, Definition, Arguments,
+    Block(
+      ClassDeclaration(class, Definition,
+        ClassBody(FunctionDeclaration(function, Definition, Arguments, Block))),
+      ReturnStatement(return, ObjectCreationExpression(new, TypeName, ArgumentList)))))
